@@ -5,77 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facelift</title>
    	<!-- jQuery + Bootstrap JS -->
-   	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+   	<script src="js/jquery-3.2.1.slim.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-	
+	-->
 	<!-- ScrollMagic v2.0.5 -->
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/ScrollMagic.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/plugins/debug.addIndicators.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/plugins/animation.gsap.js"></script>
+	<script src="js/ScrollMagic.min.js"></script>
+	<script src="js/TweenMax.min.js"></script>
+	<script src="js/debug.addIndicators.min.js"></script>
+	<script src="js/animation.gsap.min.js"></script>
 	
 	<!-- D3 v4 -->
-	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="js/d3.v4.min.js"></script>
 
 	<!-- Bootstrap + GoogleFints -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet">
-	
-	<style>
-		.no-gutter > [class*='col-'] {
-	    padding-right:0;
-	    padding-left:0;
-	}
-	
-	#transformDock img {
-		width: 100%;
-		position: absolute;
-	}
-	
-	body {
-		font-family: Lato;
-		font-size: 18px;
-		color: #4A4A4A;
-		line-height: 25px;
-		clear:both;
-	
-		background-image: linear-gradient(-148deg, #FFF142 2%, #FFDF1F 100%);
-	} 
-	
-	#desc {
-		padding-top: 100px;
-	}
-	
-	#transformDock {
-	}
-	
-	#transformDock .hidden {
-		opacity: 0;
-	}
-	
-	.spacer {
-		min-height: 100px;
-	}
-	
-	text.metricLabel {
-		text-anchor: middle;
-		color: white !important;
-		z-index: 100;
-	}
-	
-	circle {
-		fill: white;
-		opacity: .1;
-		z-index: 5;
-	}
-	</style>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<!--<link href="https://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet">
+	-->
+	<!-- Scrollytelling -->
+	<link rel="stylesheet" href="css/style.css">
+	<script>
+		//pin Docks to position and trigger animation
+		var controller = new ScrollMagic.Controller();
+		$(function () { 
+			var transformDock = new ScrollMagic.Scene({triggerElement: "#triggerTransformDock", duration: 1200})
+				.setPin("#transformDock")
+				//.addIndicators({name: "transformDock (duration: 1200)"}) // add indicators (requires plugin)
+				.addTo(controller)
+				.triggerHook(0)
+				.on("progress", function(event){
+					d3.select("#metricVis").style("background-color",backgroundDark(event.progress));
+					d3.select(".labelVis").style("background-color",backgroundBright(event.progress));
+				});
+
+			var circleDock = new ScrollMagic.Scene({triggerElement: "#triggerCircleDock", duration: 2200})
+				.setPin("#circleDock")
+				//.addIndicators({name: "transformDock (duration: 1200)"}) // add indicators (requires plugin)
+				.addTo(controller)
+				.triggerHook(0)
+				//.on("progress", function(event){
+					//d3.select("#metricVis").style("background-color",backgroundDark(event.progress));
+					//d3.select(".labelVis").style("background-color",backgroundBright(event.progress));
+				//});
+		});
+
+
+
+		var backgroundDark = d3.scaleLinear().domain([0,0.5,1]).range([d3.rgb("#972C0B"),d3.rgb("#830869"),d3.rgb("#0B7197")]),
+  			backgroundBright = d3.scaleLinear().domain([0,0.5,1]).range([d3.rgb("#A84F33"),d3.rgb("#8F367A"),d3.rgb("#3388A8")]);
+	</script>
   </head>
   <body>
   	<div class="container-fluid">
   		<div class="row justify-content-start" id="desc">
   			<div class="col-1"></div>
   			<div class="col-8">
+  				<div class="spacer"></div>
   				<img src="img/facelift.png" width="400px;"/>
   				<div style="padding-left: 165px; margin-top: -50px;">
   					<p><strong>Beautiful Sceneries create Livable Cities</strong>: Facelift is a 	Deep Neural Network, that helps you to imagine the beauty of your city by 	creating beautified images of your neighborhood.</p>
@@ -93,93 +78,40 @@
 	  			<img id="b3_2" class="hidden" src="img/b3_2.jpeg" />
 	  		</div>
   			<div class="col-md-3" style="background-color: #972C0B"><div id="metricVis"></div></div>
-  			<div class="col-md-3" id="labelVis" style="background-color: #A84F33;"></div>  				
+  			<div class="col-md-3 labelVis" style="background-color: #A84F33;">
+  				<h5>Scenes</h5>
+  				<ul class="scenes">
+  					<li class="old">beach_house</li>
+  					<li class="old">motel</li>
+  					<li class="new">loading_dock</li>
+  					<li>slum</li>
+  					<li class="new">alley</li>
+  					
+  				</ul>
+  				<h5>Labels</h5>
+  				<ul class="labels">
+  					<li>i was here all the time</li>
+  				</ul>
+  			</div>  	
+  			<script src="js/transformDock.js"></script>				
   		</div>
+  		<div class="row spacer" id="triggerCircleDock"></div>
   		<div class="row">
-  			<div class="col-md-12" style="margin-top: 2000px"></div>
+  			<div class="col-9">
+  					<div id="circleDock"></div>
+  			</div>
+  			<div class="col-3">
+  				<p style="margin-top: 200px"><strong>How is it trained?</strong><p>Would drag me down in his wake. So, then, an elongated Siamese ligature pairwise comparison by humans united us. Queequeg was my own insepa.</p>
+  				<p id="triggeLines" style="margin-top: 300px"><strong>How is it trained?</strong><p>Would drag me down in his wake. So, then, an elongated Siamese ligature pairwise comparison by humans united us. Queequeg was my own insepa.</p>
+  				<p id="triggerFlattening" style="margin-top: 800px"><strong>I Will trigger the flattening</strong><p>Would drag me down in his wake. So, then, an elongated Siamese ligature pairwise comparison by humans united us. Queequeg was my own insepa.</p>
+  			</div>
+  			<script src="js/circles.js"></script>
+  		</div>
+  		<div class="row spacer"></div>
+  		<div class="row" style="margin-top: 1000px">
+  			<div class="col-md-9">Lorem ipsum</div>
+  			<div class="col-9"></div>
   		</div>
   	</div>
-  	<script>
-  	var controller = new ScrollMagic.Controller(),
-
-  		backgroundDark = d3.scaleLinear().domain([0,1]).range([d3.rgb("#972C0B"),d3.rgb("#0B7197")]),
-  		backgroundBright = d3.scaleLinear().domain([0,1]).range([d3.rgb("#A84F33"),d3.rgb("#3388A8")]),
-
-		stages = [
-	  		{name: "first", id: "b3_0", labels: ["foo","bar"]},
-	  		{name: "second", id: "b3_1", labels: ["foo","bar"]},
-	  		{name: "last", id: "b3_2", labels: ["foo","bar"]}
-	  	],
-
-		metrics = [
-			{name: "walkability", values: [1, 1.2, 4, 5]},
-			{name: "openness", values: [2, 4, 4.3, 4.4]},
-			{name: "greenspace", values: [1, 4, 4.4, 7]},
-			{name: "complexity", values: [1, 1.2, 4, 10]},
-			{name: "landmarks", values: [2, 4, 4.3, 8]}
-		],
-
-	  		picHeight = document.getElementById('u3').offsetHeight,
-	  		colWidth = document.getElementById('metricVis').offsetWidth;
-		  	svg = d3.select('#metricVis').append('svg').style("height",picHeight).style("width",colWidth)
-	  	
-	  		circles = svg.selectAll('g').data(metrics).enter().append('g')
-	  		//introduce group
-	  		.attr('transform', function(d, i) {
-	  			return 'translate(0,'+ (i * (picHeight /metrics.length) + (picHeight / metrics.length / 2))  +')'
-	  		})
-	  		//add text
-	  		.append("text").text(function(d) {return d.name;})
-	  		.attr("class","metricLabel")
-	  		.style("fill","white")
-	  		.attr('transform',function(d){return 'translate('+colWidth / 2+',0)'});
-
-	  	console.log(backgroundDark(50))
-	  	updateCircles(0);
-	  	function updateCircles(number) {
-	  		d3.selectAll('g').data(metrics).append("circle")
-	  		.attr("id",function(d){return d.name + number;})
-	  		.attr("cx",colWidth / 2)
-	  		.attr("cy",-8)
-	  		.attr("r",function(d) {return d.values[number]*10+"px"})
-	  	}
-
-		$(function () { // wait for document ready
-			var transformDock = new ScrollMagic.Scene({triggerElement: "#triggerTransformDock", duration: 1200})
-				.setPin("#transformDock")
-				.addIndicators({name: "transformDock (duration: 1200)"}) // add indicators (requires plugin)
-				.addTo(controller)
-				.triggerHook(0)
-				.on("progress", function(event){
-					d3.select("#metricVis").style("background-color",backgroundDark(event.progress));
-					d3.select("#labelVis").style("background-color",backgroundBright(event.progress));
-
-				});
-		});
-	
-		var slideDuration = 300,
-			slideOffset = 150;
-	
-		stages.forEach(function(stage,i) {
-			var number = i+1;
-			new ScrollMagic.Scene({
-				triggerElement: "#triggerTransformDock",
-				duration: slideDuration,
-				offset: slideOffset + (i * slideDuration)
-			})
-			.setTween("#"+stage.id, 0.5, {opacity: 1}) // trigger a TweenMax.to tween
-			.addIndicators({name: stage.name + " (duration: 300)"}) // add indicators (requires plugin)
-			.triggerHook(0)
-			.addTo(controller)
-			.on("enter", function(event) {
-				if(event.scrollDirection == "FORWARD") {updateCircles(number)}
-			})
-			.on("leave",function(event) {
-				if(event.scrollDirection == "REVERSE") {
-					metrics.forEach(function(metric,i) {item = d3.select("#"+metric.name + number).remove()})
-				}
-			});
-		})
-	</script>
   </body>
 </html>
