@@ -1,117 +1,174 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facelift</title>
-   	<!-- jQuery + Bootstrap JS -->
-   	<script src="js/jquery-3.2.1.slim.min.js"></script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-	-->
-	<!-- ScrollMagic v2.0.5 -->
-	<script src="js/ScrollMagic.min.js"></script>
-	<script src="js/TweenMax.min.js"></script>
-	<script src="js/debug.addIndicators.min.js"></script>
-	<script src="js/animation.gsap.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Facelift</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="js/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/leaflet.css"/>
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+
+    <!-- D3 -->
+    <script src="js/d3.v4.min.js"></script>
+    <script src="js//queue.v1.min.js"></script>
+
+    <!--Leaflet + Heatmap -->
+    
+    <script src="js/leaflet.js"></script>
+    <script src="js/simpleheat.js"></script>
+    <script src="js/HeatLayer.js"></script>
+
+    <!-- Own scripts -->
 	
-	<!-- D3 v4 -->
-	<script src="js/d3.v4.min.js"></script>
-
-	<!-- Bootstrap + GoogleFints -->
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<!--<link href="https://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet">
-	-->
-	<!-- Scrollytelling -->
-	<link rel="stylesheet" href="css/style.css">
-	<script>
-		//pin Docks to position and trigger animation
-		var controller = new ScrollMagic.Controller();
-		$(function () { 
-			var transformDock = new ScrollMagic.Scene({triggerElement: "#triggerTransformDock", duration: 1200})
-				.setPin("#transformDock")
-				//.addIndicators({name: "transformDock (duration: 1200)"}) // add indicators (requires plugin)
-				.addTo(controller)
-				.triggerHook(0)
-				.on("progress", function(event){
-					d3.select("#metricVis").style("background-color",backgroundDark(event.progress));
-					d3.select(".labelVis").style("background-color",backgroundBright(event.progress));
-				});
-
-			var circleDock = new ScrollMagic.Scene({triggerElement: "#triggerCircleDock", duration: 2200})
-				.setPin("#circleDock")
-				//.addIndicators({name: "transformDock (duration: 1200)"}) // add indicators (requires plugin)
-				.addTo(controller)
-				.triggerHook(0)
-				//.on("progress", function(event){
-					//d3.select("#metricVis").style("background-color",backgroundDark(event.progress));
-					//d3.select(".labelVis").style("background-color",backgroundBright(event.progress));
-				//});
+    <script src="js/comparison.js"></script>
+    <script src="js/labels.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/parse.js"></script>    
+    <!--<script src="js/labelBeauty.js"></script>    
+    <script src="js/reverseLookup.js"></script>  
+    <script src="js/metricComparison.js"></script> -->
+    <script>
+    	$(document).on('click', '.intro a[href^="#"]', function (event) {
+    		event.preventDefault();
+		    $('html, body').animate({
+		        scrollTop: $($.attr(this, 'href')).offset().top
+		    }, 500);
 		});
 
+		$(document).on('click', 'span.closer', function (event) {
+			  $(this).parent().parent().hide();
+		});
+    </script>
+</head>
+<body>
+	<div id="overlay">
+		<div class="comparison"> 
+			<span class="closeOverlay" style="z-index: 99">X</span>
+			<div class="container-fluid">
+				<div class="prevLocation"><svg width=30 height=30>
+					<circle r=15 cx=15 cy=15 fill="grey" />
+					<polygon points="17,10 17,20 10,15" fill="black"/>
+				</svg></div>
+				<div class="nextLocation"><svg width=30 height=30>
+					<circle r=15 cx=15 cy=15 fill="grey" />
+					<polygon points="12,10 12,20 20,15" fill="black" />
+				</svg></div>
+				<div class="row">
+					<div class="col-12 description">
+						<div class="helper" style="z-index: 20; top: 80px; left: -50px;"><div>Move over the scene you wish to focus. <span class="closer">Got it!</span></div><img src="img/helper2.png" / style="margin-left: 50px"></div>
+						<span class="key"></span><!--<p><br><strong>How has this location changed?</strong></p>-->
+					</div>
+				</div>
+				<div class="row images">
+					<div class="col-6 c1"><h5>Original Location</h5></div>
+					<div class="col-6 c2"><h5>Beautified Location</h5></div>
+				</div>
+				<div class="row">
+					<div class="col-12 labelList"></div>
+				</div>
+				<div class="row">
+					<div class="col-6">
+						<div class="radarChart"></div>
+						<!--<p style="text-align: center;">The five Urban Design Metrics indicate, how livable the <span style="font-weight: bold; color: #F93A02;">original place</span> and its <span style="font-weight: bold; color: #08B3F7;">beautified alternative</span> are.</p>-->
+					</div>
+					<div class="col-6">
+						<div class="segnetChart"></div>
+						<!--<p style="text-align: center;">The Segnet analysis shows, what you can actually see in the pictures.</p>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-		var backgroundDark = d3.scaleLinear().domain([0,0.5,1]).range([d3.rgb("#972C0B"),d3.rgb("#830869"),d3.rgb("#0B7197")]),
-  			backgroundBright = d3.scaleLinear().domain([0,0.5,1]).range([d3.rgb("#A84F33"),d3.rgb("#8F367A"),d3.rgb("#3388A8")]);
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="intro">
+					<h1><img src="img/facelift.png" alt="facelift" /></h1>
+					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at the time.</p><p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning “black box”. With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
+					<p style="font-style: italic">"Beauty is nothing other than the promise of happiness" Stendhal, On Love.</p>
+					<!--<p><strong>Can <i>Machine Learning</i> tell us, how  future cities will look like?</strong> Probably not! But it can help to analzye urban imagery at scale and help us to explore spatial patterns of beauty.</p>
+					<p>Facelift is a Deep Neural Network, that generates more beautiful versions of a given location. By Mapping and comparing these images and their metadata, we ca get a grasp of the networks understanding of urban aesthetics.</p>-->
+					 <a href="#start">Explore Boston with FACELIFT</a>
+				</div>
+			</div>
+		</div>
+		<div class="row" id="start">
+			
+			<div class="col-8">
+				<div class="helper" style="top: 200px; left: 200px;"><div>Discover the street views before-after beautification by clicking on white-circled points. <span class="closer">Got it!</span></div><img src="img/helper2.png" / style="margin-left: 50px"></div>
+				<div id="map"></div>
+			</div>
+			<div class ="col-4">
+				<div class="helper" style="top: 10px; right: 100px;"><div>Discover where the urban elements are in the city by hovering over or clicking on the labels. <span class="closer">got it!</span></div><img src="img/helper.png" / style="float: right; margin-right: 20px"></div>
+				<p style="padding: 20px 0 0 10px; margin-bottom: 5px">Labels are ordered by beauty, ranging from <span style="font-weight: bold; color: #08B3F7;">beautiful</span> to <span style="font-weight: bold; color: #F93A02;">ugly</span>. The bigger, the more frequent.</p>
+				<div id="labels"></div>
+				<!--<div class="btn-group" role="group" aria-label="Basic example">
+				  <button type="button" class="btn btn-secondary" onclick="createList(getLabelList()); circleLayer.clearLayers();">Explore Labels</button>
+				  <button type="button" class="btn btn-secondary" onclick="reverseLookup();">Explore Map</button>
+				</div>-->
+				<div>
+					<svg>
+						<g transform="translate(0,10)">
+							<circle r=8 fill="#36657E" cx=20></circle>
+							<text x=40 y=4 fill="#d2d2d2">currently beautiful</text>
+						</g>
+						<g transform="translate(0,33)">
+							<circle r=8 fill="#993014" cx=20></circle>
+							<text x=40 y=4 fill="#d2d2d2">currently ugly</text>
+						</g>
+						<g transform="translate(0,60)">
+							<circle r=8 fill="#993014" stroke="#fff" stroke-width=2 cx=20></circle>
+							<text x=40 y=4 fill="#d2d2d2">wannabe beautiful, click to compare</text>
+						</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="labelBeauty" style="width: 80%; margin:0 auto"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="metricComparison"></div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+    //some global variables
+    var labels = {},
+    	sortedLabels, 
+    	hotLabels = [],
+    	combinations,
+    	map = L.map('map').setView([42.3488, -71.07702], 13),
+    	heat = L.heatLayer,
+    	circleLayer = L.layerGroup({interactive: false}).addTo(map);
+
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors', maxZoom: 18,}).addTo(map);
+		
+	//pre-load all necessary json files, then run init()
+    queue().defer(d3.json, 'data/BostonCollatedV2.json').await(init);
+
+	function init(error, collatedJson,) {
+		labels = parseLabels(collatedJson); //useful to make this global
+		sortedLabels = getLabelList(labels,5);
+		showLabelsOnMap(labels);
+		
+		combinations = parseCombinations(collatedJson);
+
+		showCombinationsOnMap();
+		createList(sortedLabels);
+		//openComparison(combinations["513d6c7ffdc9f03587004fa3"], segnetMinMax);
+		//reverseLookup(trueSkillCoordinates);
+		//drawMetricComparison();
+		//labelBeauty();
+	} 
+	
 	</script>
-  </head>
-  <body>
-  	<div class="container-fluid">
-  		<div class="row justify-content-start" id="desc">
-  			<div class="col-1"></div>
-  			<div class="col-8">
-  				<div class="spacer"></div>
-  				<img src="img/facelift.png" width="400px;"/>
-  				<div style="padding-left: 165px; margin-top: -50px;">
-  					<p><strong>Beautiful Sceneries create Livable Cities</strong>: Facelift is a 	Deep Neural Network, that helps you to imagine the beauty of your city by 	creating beautified images of your neighborhood.</p>
-  					<p>Facelift helps activists and urban planners to identify measures that improve the quality of urban living.We want to to encourage low-cost tactical urbanism as well as sparking a discussion about long-term goals in urban planning.</p>
-  					<p><a href="#">see facelift in action</a></p>
-  				</div>
-  			</div>
-  		</div>
-  		<div class="row spacer" id="triggerTransformDock"></div>
-  		<div class="row no-gutter" id="transformDock">
-  			<div class="col-sm-6" >
-	  			<img id="u3" src="img/u3.jpeg" />
-	  			<img id="b3_0" class="hidden" src="img/b3_0.jpeg" />
-	  			<img id="b3_1" class="hidden" src="img/b3_1.jpeg" />
-	  			<img id="b3_2" class="hidden" src="img/b3_2.jpeg" />
-	  		</div>
-  			<div class="col-md-3" style="background-color: #972C0B"><div id="metricVis"></div></div>
-  			<div class="col-md-3 labelVis" style="background-color: #A84F33;">
-  				<h5>Scenes</h5>
-  				<ul class="scenes">
-  					<li class="old">beach_house</li>
-  					<li class="old">motel</li>
-  					<li class="new">loading_dock</li>
-  					<li>slum</li>
-  					<li class="new">alley</li>
-  					
-  				</ul>
-  				<h5>Labels</h5>
-  				<ul class="labels">
-  					<li>i was here all the time</li>
-  				</ul>
-  			</div>  	
-  			<script src="js/transformDock.js"></script>				
-  		</div>
-  		<div class="row spacer" id="triggerCircleDock"></div>
-  		<div class="row">
-  			<div class="col-9">
-  					<div id="circleDock"></div>
-  			</div>
-  			<div class="col-3">
-  				<p style="margin-top: 200px"><strong>How is it trained?</strong><p>Would drag me down in his wake. So, then, an elongated Siamese ligature pairwise comparison by humans united us. Queequeg was my own insepa.</p>
-  				<p id="triggeLines" style="margin-top: 300px"><strong>How is it trained?</strong><p>Would drag me down in his wake. So, then, an elongated Siamese ligature pairwise comparison by humans united us. Queequeg was my own insepa.</p>
-  				<p id="triggerFlattening" style="margin-top: 800px"><strong>I Will trigger the flattening</strong><p>Would drag me down in his wake. So, then, an elongated Siamese ligature pairwise comparison by humans united us. Queequeg was my own insepa.</p>
-  			</div>
-  			<script src="js/circles.js"></script>
-  		</div>
-  		<div class="row spacer"></div>
-  		<div class="row" style="margin-top: 1000px">
-  			<div class="col-md-9">Lorem ipsum</div>
-  			<div class="col-9"></div>
-  		</div>
-  	</div>
-  </body>
+</body>
 </html>

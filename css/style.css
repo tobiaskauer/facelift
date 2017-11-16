@@ -1,68 +1,172 @@
-.no-gutter > [class*='col-'] {
-    padding-right:0;
-    padding-left:0;
-}
-
 body {
-	font-family: Lato;
-	font-size: 18px;
-	color: #4A4A4A;
-	line-height: 25px;
-	clear:both;
-	background-image: linear-gradient(-148deg, #FFF142 2%, #FFDF1F 100%);
-} 
-#transformDock img {
+	font-size: 11px;
+	font-family: 'Lato', sans-serif;
+	font-weight: 300;
+	line-height: 15px;
+	/* Rectangle 17: */
+background-image: linear-gradient(32deg, #001E2F 11%, #292929 100%);
+	color: #d2d2d2;
+}
+
+#map {
 	width: 100%;
-	position: absolute;
+	height: 100vh;
+	min-height: 400px;
+	z-index: 1;
 }
 
-#transformDock .hidden {
-	opacity: 0;
+#labels ul {
+	padding: 0 0 0 0 ;
 }
 
-.spacer {
-	min-height: 100px;
+#labels ul li {
+	list-style: none;
+	text-align: left;
+	padding-left: 10px;
+}
+.active, .hotLabel {
+	font-weight: bold;
+	padding-left: 0px !important;
 }
 
-text.metricLabel {
-	text-anchor: middle;
-	color: white !important;
-	z-index: 100;
+path.links  {
+  fill: none;
 }
 
-circle.metricCircle {
-	fill: white;
-	opacity: .1;
-	z-index: 5;
+.images h5 {
+	text-align: center;
+	font-size: 12px;
 }
-circle.noData {
-	fill: lightgrey;
-	opacity: .7;
+
+.row.images .c1 {
+	padding-right: 1px;
 }
-.labelVis {
-	padding: 20px !important;
+
+.row.images .c2 {
+	padding-left: 0px;
+}
+
+.spacer {height: 25px;}
+
+
+.intro {
+	height: 100vh;
+	width: 50%;
+	margin: 0 auto;
+	padding-top: 10%;
+	min-height: 300px;
+	min-width: 400px;
+	max-width: 800px;
+	text-align: center;
+	
+}
+
+.intro a {
+	border: 1px solid #08B3F7;
+	border-radius: 4px;
+	padding: 20px 30px;
+	color: #08B3F7;
+	font-size: 14px;
+	display: inline-block;
+	font-weight: 600;
+}
+
+.intro p {
+	font-weight: 300;
+	font-size: 14px;
+	margin: 30px 0;
+	line-height: 1.4em;
+}
+
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0%; 
+    left: 0%;
+    right: 0%;
+    bottom: 0%;
+    background-color: rgba(0,0,0,0.6); /* Black background with opacity */
+    z-index: 10; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+    border-radius: 4px;
+    padding-top: 20px;
+}
+
+.comparison {
+	position: relative;
+	width: 600px;
+	margin: 0 auto;
+	top: 3%;
+	padding: 0 15px;
+	background: #2B2B2B;
+	border-radius: 4px;
+	border: 1px solid darkgrey;
 	color: #fff;
 }
-.labelVis h5 {
-	font-weight: bold;
+
+#start {
+	background: #242426;
 }
-.labelVis ul {
-	margin: 0 0 30px 0;	
-	padding: 0;
+
+.comparison .prevLocation {
+	position: absolute;
+	top: 20%;
+	left: -15px;
 }
-.labelVis li {
-	display: inline-block;
-	margin: 0 3px 6px 0;
+
+.comparison .nextLocation {
+	position: absolute;
+	top: 20%;
+	right: -15px;
+}
+
+.description .key {
+	color: grey;
+	font-size: .7em;
+}
+
+.comparison .description {
+	text-align: center;
+}
+
+#overlay .closeOverlay {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	color: #ffffff;
+}
+
+#overlay img.Original, #overlay img.Beautified {
+	width: 100%;
+}
+
+.legend {
+	fill: #fff;
+	font-size: 9px;
+}
+
+.helper {
+	z-index: 5;
+	position: absolute;
+	width: 200px;
+}
+
+.helper div {
+	padding: 5px;
 	background: #fff;
-	padding: 4px 4px;
-	color: #4A4A4A;
-	font-size: 14px;
-	line-height: 14px;
-	border-radius: 3px;
+	border-radius: 4px;
+	color: #292929;
+	box-shadow: 2px 2px 10px black;
 }
-.labelVis li.old {
-	opacity: 0.8;
+
+.helper .closer {
+	color: #08B3F7;
+	font-weight: bold;
+	border-bottom: 1px solid #08B3F7;
 }
-#circleDock{
-	margin: 0 !important;
+
+.helper .closer:hover {
+	cursor: pointer;
 }
