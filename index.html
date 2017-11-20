@@ -68,10 +68,12 @@
 				</div>
 				<div class="row">
 					<div class="col-6">
+						<h5>Urban Design Metrics</h5>
 						<div class="radarChart"></div>
 						<!--<p style="text-align: center;">The five Urban Design Metrics indicate, how livable the <span style="font-weight: bold; color: #F93A02;">original place</span> and its <span style="font-weight: bold; color: #08B3F7;">beautified alternative</span> are.</p>-->
 					</div>
 					<div class="col-6">
+						<h5>Change of Urban Elements</h5>
 						<div class="segnetChart"></div>
 						<!--<p style="text-align: center;">The Segnet analysis shows, what you can actually see in the pictures.</p>-->
 					</div>
@@ -87,7 +89,7 @@
 				<div class="intro">
 					<h1><img src="img/facelift.png" alt="facelift" /></h1>
 					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at the time.</p><p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning “black box”. With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
-					<p style="font-style: italic">"Beauty is nothing other than the promise of happiness" Stendhal, On Love.</p>
+					<p style="font-style: italic, font-weight: bold;">"Beauty is nothing other than the promise of happiness" Stendhal, On Love.</p>
 					<!--<p><strong>Can <i>Machine Learning</i> tell us, how  future cities will look like?</strong> Probably not! But it can help to analzye urban imagery at scale and help us to explore spatial patterns of beauty.</p>
 					<p>Facelift is a Deep Neural Network, that generates more beautiful versions of a given location. By Mapping and comparing these images and their metadata, we ca get a grasp of the networks understanding of urban aesthetics.</p>-->
 					 <a href="#start">Explore Boston with FACELIFT</a>
@@ -131,12 +133,147 @@
 				<div class="labelBeauty" style="width: 80%; margin:0 auto"></div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-12">
-				<div class="metricComparison"></div>
+		<form>
+			<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Practitioners Questionnaire</h6>
+					<hr>
+				</div>
 			</div>
-		</div>
-	</div>
+			<div class="row justify-content-center">
+				<div class="col-6">
+					<p><strong>Who are you?</strong><p>
+					<div class="form-row">
+ 						<div class="col">
+							<input type="text" class="form-control form-control-sm" placeholder="First name">
+ 						</div>
+ 						<div class="col">
+ 				 			<input type="text" class="form-control form-control-sm" placeholder="Last name">
+ 						</div>
+ 					</div>
+  					<div class="form-group">
+  						<label></label>
+						<input type="email" class="form-control form-control-sm" id="exampleInputEmail1"aria-describedby="emailHelp" placeholder="Enter email">
+						<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyoneelse.</small>
+					</div>
+
+					<p><strong>What field are you active in?</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Urban Planning
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="" >
+					    Computer Science
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="" >
+					    Architecture
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="" >
+					    Information Visialization
+					  </label>
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Task 1 / 6: Patterns of Beauty</h6>
+					<hr style="border-color: grey">
+					
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-2"><img src="img/form-labels.png"></div>
+				<div class="col-4">
+					<p><strong>Select multiple labels on the map and consider that labels are ordered by beauty. Identify the areas that are beautiful and ugly. Select the true statement (multiple selection possible):</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					   West more beautiful than East
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	East more beautiful than West
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    North more beautiful than South
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    South more beautiful than North
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    South more beautiful than East
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    North more beautiful than West
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					     I can not find any patterns.
+					  </label>
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Task 2 / 6: Urban Design Metrics</h6>
+					<hr style="border-color: grey">
+					
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-2"><img src="img/form-metrics.png"></div>
+				<div class="col-4">
+					<p><strong>Explore several beautification examples. Based on the presented data, what urban design metrics are typically associated with beauty (multiple selection possible)?</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					   Walkability
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	Visual Complexity
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Greenspace
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Landmarks
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Openness
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	none of the above, but i would love to see how [________] performs.
+					  </label>
+					</div>
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</p></p></div>
 	
 	
 	<script type="text/javascript">
@@ -152,7 +289,7 @@
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors', maxZoom: 18,}).addTo(map);
 		
 	//pre-load all necessary json files, then run init()
-    queue().defer(d3.json, 'data/BostonCollatedV2.json').await(init);
+    queue().defer(d3.json, 'data/BostonCollatedV3.json').await(init);
 
 	function init(error, collatedJson,) {
 		labels = parseLabels(collatedJson); //useful to make this global
@@ -160,10 +297,11 @@
 		showLabelsOnMap(labels);
 		
 		combinations = parseCombinations(collatedJson);
+		globalSegnetMinMax = segnetMinMax(combinations); 
 
-		showCombinationsOnMap();
+		showCombinationsOnMap(globalSegnetMinMax);
 		createList(sortedLabels);
-		//openComparison(combinations["513d6c7ffdc9f03587004fa3"], segnetMinMax);
+		openComparison(combinations["513d6c7ffdc9f03587004fa3"], segnetMinMax);
 		//reverseLookup(trueSkillCoordinates);
 		//drawMetricComparison();
 		//labelBeauty();

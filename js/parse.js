@@ -80,23 +80,74 @@ function parseCombinations(collation) {
 	return combinations;
 }
 
-//parse global extreme values of all segnet values
+//parse global extreme values of all segnet value changes
 function segnetMinMax(combinations) {
+	//var allSegnets = {
+	//	"Sky": [],"Building": [],"Pole": [],"Road Marking": [],"Road": [],"Pavement": [],"Tree": [],"Sign Symbol": [],"Fence": [],"Vehicle": [],"Pedestrian": [],"Bike": []
+	//};
+	//Object.keys(combinations).forEach(function(key){
+	//	["Original","Beautified"].forEach(function(version) {
+	//		Object.keys(combinations[key][version].Segnet).forEach(function(segment) {
+	//			var value = combinations[key][version].Segnet[segment]
+	//			if(typeof value !== 'undefined') { //this is not perfect, since 0 values are ignored for the minMax... but i can live with it
+	//				allSegnets[segment].push(value)
+	//			} 
+	//		})
+	//	})
+	//})
+//
+	//Object.keys(combinations).forEach(function(key){
+	//		Object.keys(combinations[key][version].Segnet).forEach(function(segment) {
+	//			var value = combinations[key][version].Segnet[segment]
+	//			if(typeof value !== 'undefined') { //this is not perfect, since 0 values are ignored for the minMax... but i can live with it
+	//				allSegnets[segment].push(value)
+	//			} 
+	//		})
+	//})
+
 	var allSegnets = {
-		"Sky": [],"Building": [],"Pole": [],"Road Marking": [],"Road": [],"Pavement": [],"Tree": [],"Sign Symbol": [],"Fence": [],"Vehicle": [],"Pedestrian": [],"Bike": []
+		"Sky": {},"Building": {},"Pole": {},"Road Marking": {},"Road": {},"Pavement": {},"Tree": {},"Sign Symbol": {},"Fence": {},"Vehicle": {},"Pedestrian": {},"Bike": []
 	};
-	Object.keys(combinations).forEach(function(key){
+	
+	Object.keys(allSegnets).forEach(function(segment) {
 		["Original","Beautified"].forEach(function(version) {
-			Object.keys(combinations[key][version].Segnet).forEach(function(segment) {
-				var value = combinations[key][version].Segnet[segment]
-				if(typeof value !== 'undefined') { //this is not perfect, since 0 values are ignored for the minMax... but i can live with it
-					allSegnets[segment].push(value)
-				} 
-			})
+			allSegnets[segment][version] = []
+			allSegnets[segment].Change = []
+		})
+		Object.keys(combinations).forEach(function(key){
+			var original = combinations[key].Original.Segnet[segment];
+			if(typeof original === 'undefined') {original = 0};
+			var beautified = combinations[key].Beautified.Segnet[segment];
+			if(typeof beautified === 'undefined') {beautified = 0};
+			var change = beautified - original
+			
+			allSegnets[segment].Original.push(original)
+			allSegnets[segment].Beautified.push(beautified)
+			allSegnets[segment].Change.push(change)
 		})
 	})
-	Object.keys(allSegnets).forEach(function(segment){
-		allSegnets[segment] = allSegnets[segment].sort(function (a,b) {return  a - b;})
+
+	var minMax = {};
+	Object.keys(allSegnets).forEach(function(segment) {
+		minMax[segment] = {}
+		minMax[segment].minChange = allSegnets[segment].Change.reduce(function(a, b) {return Math.min(a, b);});
+		minMax[segment].maxChange = allSegnets[segment].Change.reduce(function(a, b) {return Math.max(a, b);});
+
+		var min = [
+			allSegnets[segment].Original.reduce(function(a, b) {return Math.min(a, b)}),
+			allSegnets[segment].Beautified.reduce(function(a, b) {return Math.min(a, b)})
+		]
+		minMax[segment].min = min.reduce(function(a, b) {return Math.min(a, b)})
+
+		var max = [
+			allSegnets[segment].Original.reduce(function(a, b) {return Math.max(a, b)}),
+			allSegnets[segment].Beautified.reduce(function(a, b) {return Math.max(a, b)})
+		]
+		minMax[segment].max = max.reduce(function(a, b) {return Math.max(a, b)})
 	})
-	return allSegnets
+
+	//Object.keys(allSegnets).forEach(function(segment){
+	//	allSegnets[segment] = allSegnets[segment].sort(function (a,b) {return  a - b;})
+	//})
+	return minMax;
 }

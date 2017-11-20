@@ -33,13 +33,31 @@ path.links  {
   fill: none;
 }
 
-.images h5 {
+.comparison h5 {
 	text-align: center;
 	font-size: 12px;
 }
 
+
 .row.images .c1 {
 	padding-right: 1px;
+}
+
+.formHeadline {
+	margin-top: 30px
+}
+
+.formHeadline h6 {
+	margin: 0;
+}
+
+form img {
+	width: 100%;
+}
+
+.formHeadline hr {
+	border-color: grey;
+	margin: 0 0 10px 0;
 }
 
 .row.images .c2 {
@@ -53,7 +71,7 @@ path.links  {
 	height: 100vh;
 	width: 50%;
 	margin: 0 auto;
-	padding-top: 10%;
+	padding-top: 5%;
 	min-height: 300px;
 	min-width: 400px;
 	max-width: 800px;

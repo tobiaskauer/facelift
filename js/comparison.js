@@ -1,5 +1,5 @@
 
-function openComparison(location) {
+function openComparison(location, segnetMinMax) {
    // console.log(location)
     $("#overlay").fadeIn();
     $(".closeOverlay").click(function(){
@@ -85,8 +85,8 @@ function openComparison(location) {
 		.style("fill",function(d){return colorLabelComparison(d.mean)})
 		.style("text-anchor","end")
 		.style("font-weight","400")
+		.style("opacity",.1)
 		.style("font-size","9")
-		.style("opacity",0)
 		.style("transform","rotate(-45deg)");
 	
 		//what are the current combinations labels?
@@ -110,26 +110,28 @@ function openComparison(location) {
 					.style("font-weight","bold")
 					.style("font-size","11")
 				} else {
-					currentElement.style("opacity",.3)
+					currentElement.style("opacity",".2")
 				}
 			})
 			
 			d3.select(".radarChart #"+version+" path").style("fill-opacity", 1)//highlight radarblob
-			d3.select(".segnetChart ."+version+"").style("opacity",1) //highlight segnet
 			d3.selectAll(".comparison img").style("opacity",.5)
 			d3.select(this).style("opacity",1)
+			d3.selectAll(".segnetChart .dots, .segnetChart .changeBars").style("opacity",0)
+			d3.select(".segnetChart ."+version).style("opacity",1)
 		})
 		.on("mouseout",function(){
 			d3.selectAll(".labelList text")
 			.style("font-weight","400")
 			.style("font-size","9")
-			.style("opacity",0)
+			.style("opacity",.1)
 			.style("fill",function(d){
 				return colorLabelComparison(d.mean)
 			})
 			d3.selectAll(".radarChart path").style("fill-opacity", .15)
-			d3.selectAll(".segnetChart .Original, .segnetChart .Beautified").style("opacity",0)
 			d3.selectAll(".comparison img").style("opacity",1)
+			d3.selectAll(".segnetChart .changeBars").style("opacity",1)
+			d3.selectAll(".segnetChart .dots").style("opacity",0)
 		})
 	}
 	
@@ -142,78 +144,255 @@ function openComparison(location) {
 
 
 	function segnetChart(location) {
-		//console.log(globalSegnetMinMax);
 		var width = $(".comparison .segnetChart").width();
+		var height = 270
 		d3.select(".comparison .segnetChart").selectAll("*").remove()
-		var svg = d3.select(".comparison .segnetChart").append("svg").attr("width",width).attr("height",270)
-		
-		var versions = ["Original","Beautified"];
-		//var segmentMinMax = [1000,0]; 
+		var svg = d3.select(".comparison .segnetChart").append("svg").attr("width",width).attr("height",height)
 
-		//write all in array and calculate min and max values
-		var allSegments = [];
+		//write data - expecially to calculate normalized change
+		var data = {};
 		Object.keys(location.Original.Segnet).forEach(function(segment,i) {
-			allSegments[i] = [];
-			versions.forEach(function(version,j){
-				var value = location[version].Segnet[segment];
-				//if(value < segmentMinMax[0]) {segmentMinMax[0] = value}
-				//if(value > segmentMinMax[1]) {segmentMinMax[1] = value}
+			data[segment] = {}
+			var original = location.Original.Segnet[segment]
+			if(typeof original === 'undefined') {original = 0}
+			var beautified = location.Beautified.Segnet[segment]
+			if(typeof beautified === 'undefined') {beautified = 0}
+
+			var min = globalSegnetMinMax[segment].min
+			var max = globalSegnetMinMax[segment].max
+
+
+			var minChange = globalSegnetMinMax[segment].minChange;
+			var maxChange = globalSegnetMinMax[segment].maxChange;
+			var change = beautified - original;
+
+
+			
+			data[segment].Change = 2* ((change - minChange) / (maxChange - minChange)) -1
+			data[segment].Original = (original - min) / (max - min)
+			data[segment].Beautified = (beautified - min) / (max - min)
+		})
+
+		//scales
+		var xPosition = d3.scaleLinear().domain([-1,1]).range([5,width-5])
+		var yPosition = d3.scaleLinear().domain([0,Object.keys(data).length]).range([15,height])
+
+		//legend
+		var scale = svg.append("g").attr("class","scale");
+		//scale.selectAll("line").data([-1,-.5,0,.5,1]).enter().append("line")
+		//.attr("stroke","grey")
+		//.attr("y1",10)
+		//.attr("y2",height)
+		//.attr("x1",function(d){return xPosition(d)})
+		//.attr("x2",function(d){return xPosition(d)})
+		//.attr("opacity",.5)
+		scale.selectAll("line").data(Object.keys(data)).enter().append("line")
+		.attr("stroke","grey")
+		.attr("y1",function(d,i){return yPosition(i) -3})
+		.attr("y2",function(d,i){return yPosition(i) -3})
+		.attr("x1",0)
+		.attr("x2",width)
+		.attr("opacity",.1)
+
+		scale.selectAll("text").data([-1,-.5,0,.5,1]).enter().append("text")
+		.attr("fill","grey")
+		.attr("y",10)
+		.style("font-size",10)
+		.style("text-anchor","middle")
+		.style("font-weight","normal")
+		.attr("x",function(d){return xPosition(d)})
+		.attr("opacity",1)
+		.text(function(d){return d})
 	
-				allSegments[i][0] = segment;
-				if(typeof value === 'undefined') {
-					allSegments[i][j+1] = 0
-				} else {
-					allSegments[i][j+1] = value;
-				}
+		var colorScale = d3.scaleLinear().domain([1,0]).range(["white","grey"])
+		var changeBars = svg.append("g").attr("class","changeBars")
+		changeBars.selectAll("path").data(Object.keys(data)).enter().append("path")
+		.attr("fill",function(d){
+			if(data[d].Change >	 0) {return "#08B3F7"} else {return "#F93A02"}
+		})
+		.style("opacity",function(d){
+			return Math.abs(data[d].Change) *2
+		})
+		.attr("d",function(d,i){
+			var correction = -.5;
+			if(data[d].change < 0) {correction = .5}
+			var x1 = width /2 + correction
+			var y1 = yPosition(i)
+			var p2 = xPosition(data[d].Change)
+			var p3 = yPosition(i) + 15
+			var p4 = width /2 + correction
+			return "M"+x1+" "+y1+" H "+p2+" V "+p3+" H "+p4+" L "+x1+" "+y1
+		})
+
+		var labels = svg.append("g").attr("class","labels")
+		labels.selectAll("text").data(Object.keys(data)).enter().append("text")
+		.attr("y",function(d,i){return yPosition(i) + 10})
+		.style("fill","white")
+		.style("font-size",11)
+		.attr("x",function(d){
+			//var correction = -2;
+			//if(data[d].Change < 0) {correction = 2}
+			//return width / 2 + correction
+			return 2
+		})
+		.style("text-anchor",function(d,i){
+			//if(data[d].Change < 0) {return "beginning"}
+			//else {return "end"}
+			return "beginning"
+		})
+		.text(function(d){return d})
+
+		var versions = ["Original","Beautified"]
+		versions.forEach(function(version, i) {
+			svg.append("g").attr("class",version+" dots").style("opacity",0)
+			.selectAll("circle").data(Object.keys(data)).enter().append("circle")
+			.attr("cy",function(d,i){return yPosition(i) + 7.5})
+			.attr("r",3)
+			.attr("cx",function(d){return xPosition(data[d][version])})
+			.attr("fill",function(d,j){
+				if(i) {return "#08B3F7"} else {return "#F93A02"}
 			})
 		})
 
+		
+
+
+
+		//scales
+		//var scale = {};
+		//Object.keys(globalSegnetMinMax).forEach(function(segment){
+		//	var size = globalSegnetMinMax[segment].length
+		//	scale[segment] = d3.scaleLinear().domain([0,size]).range([30,width])
+		//})
+		//var scalePosition = d3.scaleLinear().domain([0,11]).range([20,250]); // y position
+		
 		//get difference of each segment
-		var maxDiff = 0;
-		allSegments.forEach(function(segment,i){
-			var difference = segment[2] - segment[1];
-			allSegments[i][3] = difference;
-			if(difference > maxDiff) {maxDiff = difference}
+		//allSegments.forEach(function(segment,i){
+		//	var name = segment[0],
+		//		beautified = segment[2],
+		//		original= segment[1],
+		//		allValues = globalSegnetMinMax[name]
+		//	allSegments[i][3] = scale[name](allValues.indexOf(beautified)) - scale[name](allValues.indexOf(original))
+		//})
+		//var sortedSegments= allSegments.sort(function (a,b) {return  b[3] - a[3];}); // sort by decreasing relative difference 
+//
+		////lines + legend
+		//var axis = svg.append("g").attr("class","lines")
+		//axis.selectAll("line").data(sortedSegments).enter().append("line")
+		//.attr("x1",30)
+		//.attr("y1",function(d,i){return scalePosition(i)})
+		//.attr("x2",width)
+		//.attr("y2",function(d,i){return scalePosition(i)})
+		//.attr("stroke","white")
+		//.attr("opacity",".4")
+		//axis.selectAll("text").data(sortedSegments).enter().append("text")
+		//.attr("x",0)
+		//.attr("y",function(d,i){return scalePosition(i)})
+		//.text(function(d){return d[0]})
+		//.style("font-size",7)
+		//.style("fill","white")
+		//.attr("opacity",".7");
+//
+		////create gradients for increasing and decreasing bars
+		//var defs = svg.append("defs");
+		//var increase = defs.append("linearGradient").attr("id", "increase").attr("x1", "0%").attr("x2", "100%").attr("y1", "0%").attr("y2", "0%");
+		//	increase.append("stop").attr('class', 'start').attr("offset", "0%").attr("stop-color", "#F93A02").attr("stop-opacity", 1);
+		//	increase.append("stop").attr('class', 'end').attr("offset", "100%").attr("stop-color", "#08B3F7").attr("stop-opacity", 1);
+		//var decline = defs.append("linearGradient").attr("id", "decline").attr("x1", "0%").attr("x2", "100%").attr("y1", "0%").attr("y2", "0%");
+		//	decline.append("stop").attr('class', 'start').attr("offset", "0%").attr("stop-color", "#08B3F7").attr("stop-opacity", 1);
+		//	decline.append("stop").attr('class', 'end').attr("offset", "100%").attr("stop-color", "#F93A02").attr("stop-opacity", 1);
+		//
+		////draw shapes for comparison
+		//svg.append("g").attr("class","boxes").selectAll("polygon").data(sortedSegments).enter()
+		//.append("polygon")
+		//.attr("fill",function(d){
+		//	if(d[2] > d[1]) {return "url(#increase)"} else {return "url(#decline)"}
+		//})
+		//.attr("points",function(d,i){
+		//	var y1 = scalePosition(i) - 5
+		//	var y2 = y1 + 10;
+		//	var x1 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[1])); // Original... I'm actually surprised this works
+		//	var x2 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[2])); // Beautified
+		//	return x1+","+y1+" "+x2+","+(y1 + 3)+" "+x2+","+(y2 - 3)+" "+x1+","+y2+" "+x1+","+y1
+		//})
+//
+		////draw circles for both versions
+		//versions.forEach(function(version,i){
+		//	var circles = svg.append("g").attr("class",version).style("opacity",0)
+		//	circles.selectAll("circle").data(sortedSegments).enter().append("circle")
+		//	.attr("r",3)
+		//	.style("fill",function(d){
+		//		if(i){return "#08B3F7"}
+		//			else {return "#F93A02"}
+		//	})
+		//	.attr("cx",function(d,j){
+		//		return scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[i+1]))
+		//	})
+		//	.attr("cy",function(d,j){
+		//		return scalePosition(j)
+		//	})
+		//})
+
+
+
+		/*svg.append("g").attr("class","values").selectAll("path").data(sortedSegments).enter()
+		.append("path")
+		.attr("fill",function(d){
+			if(d[2] > d[1]) {return "url(#increase)"} else {return "url(#decline)"}
 		})
-		var sortedSegments= allSegments.sort(function (a,b) {return  b[3] - a[3];}); // sort by decreasing relative difference 
+		.attr("d",function(d,i){
+			var y1 = scalePosition(i) - 2
+			var y2 = y1 + 4;
+			var x1 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[1])); // Original... I'm actually surprised this works
+			var x2 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[2])); // Beautified
+			return "M"+x1+" "+y1+" H "+x2+" V "+y2+" H "+x1+" L "+x1+" "+y1+""
+		})*/
 
 
 
+	
 
-		var scaleSegment = d3.scaleLinear().domain([0,maxDiff]).range([0,width/2])
-		var segmentPosition = d3.scaleLinear().domain([0,allSegments.length]).range([20,270])
-		
+
+
+		//var scaleSegment = d3.scaleLinear().domain([0,segmentMinMax[1]]).range([0,width/2])
+		//var segmentPosition = d3.scaleLinear().domain([0,allSegments.length]).range([20,270])
+		//console.log(allSegments)
+		/*
 		//create bars
-
-		svg.append("g").style("opacity",.7).selectAll("rect").data(sortedSegments).enter()
-		.append("rect").attr("height",15)
-		.attr("class",function(d){return d[0]})
-		
-		.attr("width",function(d){
-			return scaleSegment(Math.abs(d[3]))
+		versions.forEach(function(version,i){
+			svg.append("g").attr("class",version).style("opacity",.7).selectAll("rect").data(allSegments).enter()
+			.append("rect").attr("height",15)
+			.attr("class",function(d){return d[0]})
+			
+			.attr("width",function(d){
+				return scaleSegment(d[i+1])
+			})
+			.attr("y",function(d,j){
+				return segmentPosition(j);
+			})
+			.style("fill",function(d){
+				if(i){return "#08B3F7"}
+					else {return "#F93A02"}
+			})
+			.attr("x",function(d){
+				if(i){return width/2}
+					else {return width/2 - scaleSegment(d[i+1])}
+			})
 		})
-		.attr("y",function(d,i){
-			return segmentPosition(i);
-		})
-		.style("fill",function(d){
-			if(d[2] > d[1]){return "#08B3F7"}
-				else {return "#F93A02"}
-		})
-		.attr("x",function(d){
-			if(d[2] > d[1]){return width/2}
-				else {return width/2 - scaleSegment(Math.abs(d[3]))}
-		})
-
 
 		//create legend
-		svg.append("g").attr("class","legens").selectAll("text").data(sortedSegments).enter().append("text")
+		svg.append("g").attr("class","legens").selectAll("text").data(allSegments).enter().append("text")
 		.attr("text-anchor",function(d){
-			if(d[2] > d[1]){return "end"}
-				else {return "beginning"}
+			if(width/2 +scaleSegment(d[2]) > (width * .75)) {
+				return "end";
+			} else {
+				return "beginning"
+			}
 		})
 		.attr("x",function(d){
-			if(d[2] > d[1]){return width / 2 - 5}
-				else {return width / 2 + 5}
+			var correction;
+			if(width/2 +scaleSegment(d[2]) > (width * .75)) {correction = -3} else {correction = 2}
+			return width/2 + scaleSegment(d[2]) + correction
 		})
 		.attr("fill","white")
 		.attr("font-size",9)
@@ -223,11 +402,12 @@ function openComparison(location) {
 			})
 		.text(function(d){
 			var plus = "";
-			var text = Math.floor(d[3] * 1000) / 10
 			if(d[3] > 0) {plus = "+"}
-			if(d[2] > d[1]){return d[0]+" "+plus+text+"%"}
-				else {return plus+text+"% "+d[0]}
-		})
+			return plus+d[3]+'% '+d[0]
+		})*/
+	
+
+
 	}
 }
 
