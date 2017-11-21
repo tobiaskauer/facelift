@@ -28,7 +28,7 @@ function showLabelsOnMap(labels) {
 	var labelLayer = L.layerGroup().addTo(map)
 	var minMax = getLabelList(labels, 5)[1];
 	var colorScale = d3.scaleLinear().domain([minMax[0],minMax[1]]).range([d3.rgb("#F93A02"),d3.rgb("#08B3F7")]);
-	var sizeScale = d3.scaleLog().domain([minMax[0],minMax[1]]).range([8, 3])
+	var sizeScale = d3.scaleLog().domain([minMax[0],minMax[1]]).range([5, 3])
 
 	Object.keys(labels).forEach(function(label) {
 		Object.keys(labels[label]).forEach(function(key,i) {
@@ -48,7 +48,7 @@ function showLabelsOnMap(labels) {
 function showCombinationsOnMap(globalSegnetMinMax) {
 	var combinationLayer = L.layerGroup().addTo(map)
 	var minMax = sortedLabels[1];
-	var sizeScale = d3.scaleLog().domain([minMax[0],minMax[1]]).range([7, 3])
+	var sizeScale = d3.scaleLog().domain([minMax[0],minMax[1]]).range([5, 3])
 
 	Object.keys(combinations).forEach(function(key) {
 		var marker = L.circleMarker(

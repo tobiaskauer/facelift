@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	 <meta charset="UTF-8">
 	<title>Facelift</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <script src="js/jquery.min.js"></script>
@@ -24,6 +25,7 @@
     <script src="js/labels.js"></script>
     <script src="js/map.js"></script>
     <script src="js/parse.js"></script>    
+    <script src="js/dna.js"></script>    
     <!--<script src="js/labelBeauty.js"></script>    
     <script src="js/reverseLookup.js"></script>  
     <script src="js/metricComparison.js"></script> -->
@@ -83,13 +85,13 @@
 	</div>
 
 
-	<div class="container-fluid">
+	<div class="container-fluid" style="background-image: linear-gradient(32deg, #001E2F 11%, #292929 100%)">
 		<div class="row">
 			<div class="col-12">
 				<div class="intro">
 					<h1><img src="img/facelift.png" alt="facelift" /></h1>
-					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at the time.</p><p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning “black box”. With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
-					<p style="font-style: italic, font-weight: bold;">"Beauty is nothing other than the promise of happiness" Stendhal, On Love.</p>
+					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at the time.</p><p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning "<i>black box</i>". With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
+					<p><strong><i>"Beauty is nothing other than the promise of happiness"</i></strong><br>Stendhal, On Love.</p>
 					<!--<p><strong>Can <i>Machine Learning</i> tell us, how  future cities will look like?</strong> Probably not! But it can help to analzye urban imagery at scale and help us to explore spatial patterns of beauty.</p>
 					<p>Facelift is a Deep Neural Network, that generates more beautiful versions of a given location. By Mapping and comparing these images and their metadata, we ca get a grasp of the networks understanding of urban aesthetics.</p>-->
 					 <a href="#start">Explore Boston with FACELIFT</a>
@@ -111,28 +113,41 @@
 				  <button type="button" class="btn btn-secondary" onclick="reverseLookup();">Explore Map</button>
 				</div>-->
 				<div>
-					<svg>
-						<g transform="translate(0,10)">
-							<circle r=8 fill="#36657E" cx=20></circle>
-							<text x=40 y=4 fill="#d2d2d2">currently beautiful</text>
+					<svg height="60">
+						<g transform="translate(0,5)">
+							<circle r=5 fill="#36657E" cx=15></circle>
+							<text x=25 y=4 fill="#d2d2d2">currently beautiful</text>
 						</g>
-						<g transform="translate(0,33)">
-							<circle r=8 fill="#993014" cx=20></circle>
-							<text x=40 y=4 fill="#d2d2d2">currently ugly</text>
+						<g transform="translate(0,20)">
+							<circle r=5 fill="#993014" cx=15></circle>
+							<text x=25 y=4 fill="#d2d2d2">currently ugly</text>
 						</g>
-						<g transform="translate(0,60)">
-							<circle r=8 fill="#993014" stroke="#fff" stroke-width=2 cx=20></circle>
-							<text x=40 y=4 fill="#d2d2d2">wannabe beautiful, click to compare</text>
+						<g transform="translate(0,35)">
+							<circle r=5 fill="#993014" stroke="#fff" stroke-width=2 cx=15></circle>
+							<text x=25 y=4 fill="#d2d2d2">wannabe beautiful, click to compare</text>
 						</g>
 					</svg>
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-12">
-				<div class="labelBeauty" style="width: 80%; margin:0 auto"></div>
+	</div>
+	<div class="container" id="dna" style="background: white">
+		<div class="row" style="margin-top: 25px;">
+			<div class="col-8" style="color: darkgrey">
+				<h6>The DNA of Beauty</h6>
+				<p>We can compare the changes in Urban Elements (left) and Urban Design Metrics (right) for all beautified locations. Blue bars indicate an increase in the beautified location, red bars mean, that there is less of that element or metric.
 			</div>
 		</div>
+		<div class="dna row justify-content-center" style="margin-bottom: 25px;">
+			<div class="col-8" style="border-right: 1px lightgrey dotted">
+				<div class="elementDNA"></div>
+			</div>
+			<div class="col-4">
+				<div class="metricDNA"></div>
+			</div>
+		</div>
+		</div>
+	<div class="container-fluid" style="padding: 25px 0; background: #242426;">
 		<form>
 			<div class="row justify-content-center formHeadline">
 				<div class="col-6">
@@ -153,8 +168,11 @@
  					</div>
   					<div class="form-group">
   						<label></label>
-						<input type="email" class="form-control form-control-sm" id="exampleInputEmail1"aria-describedby="emailHelp" placeholder="Enter email">
+						<input type="email" class="form-control form-control-sm" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email">
 						<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyoneelse.</small>
+  						<label></label>
+						<input type="text" class="form-control form-control-sm" id="keyphrase" placeholder="Keyphrase">
+						<small id="keyphrase" class="form-text text-muted">You can find the Keyphrase in the invitation e-Mail we sent you.</small>
 					</div>
 
 					<p><strong>What field are you active in?</strong></p>
@@ -182,13 +200,13 @@
 			</div>
 			<div class="row justify-content-center formHeadline">
 				<div class="col-6">
-					<h6>Task 1 / 6: Patterns of Beauty</h6>
+					<h6>Task 1 / 6: Spatial Patterns</h6>
 					<hr style="border-color: grey">
 					
 				</div>
 			</div>
 			<div class="row justify-content-center">
-				<div class="col-2"><img src="img/form-labels.png"></div>
+				<div class="col-2"><img src="img/labelSelect.gif"></div>
 				<div class="col-4">
 					<p><strong>Select multiple labels on the map and consider that labels are ordered by beauty. Identify the areas that are beautiful and ugly. Select the true statement (multiple selection possible):</strong></p>
 					<div class="form-check">
@@ -236,7 +254,7 @@
 				</div>
 			</div>
 			<div class="row justify-content-center">
-				<div class="col-2"><img src="img/form-metrics.png"></div>
+				<div class="col-2"><img src="img/metrics.gif"></div>
 				<div class="col-4">
 					<p><strong>Explore several beautification examples. Based on the presented data, what urban design metrics are typically associated with beauty (multiple selection possible)?</strong></p>
 					<div class="form-check">
@@ -271,7 +289,14 @@
 					</div>
 				</div>
 			</div>
-			<button type="submit" class="btn btn-primary">Submit</button>
+			<div class="row justify-content-center">
+				<div class="col-6">
+					<hr style="border-color: grey">
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<p>Thanks you for your help!</p>
+				</div>
+				
+			</div>
 		</form>
 	</p></p></div>
 	
@@ -289,7 +314,7 @@
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors', maxZoom: 18,}).addTo(map);
 		
 	//pre-load all necessary json files, then run init()
-    queue().defer(d3.json, 'data/BostonCollatedV3.json').await(init);
+    queue().defer(d3.json, 'data/BostonCollatedV4.json').await(init);
 
 	function init(error, collatedJson,) {
 		labels = parseLabels(collatedJson); //useful to make this global
@@ -297,14 +322,18 @@
 		showLabelsOnMap(labels);
 		
 		combinations = parseCombinations(collatedJson);
-		globalSegnetMinMax = segnetMinMax(combinations); 
+		globalSegnetMinMax = segnetMinMax(combinations);
+		globalMetricChange = metricChange(combinations);
 
 		showCombinationsOnMap(globalSegnetMinMax);
 		createList(sortedLabels);
-		openComparison(combinations["513d6c7ffdc9f03587004fa3"], segnetMinMax);
+		//openComparison(combinations["513d6c7ffdc9f03587004fa3"], segnetMinMax);
 		//reverseLookup(trueSkillCoordinates);
 		//drawMetricComparison();
 		//labelBeauty();
+
+		elementDNA(globalSegnetMinMax);
+		metricDNA(globalMetricChange);
 	} 
 	
 	</script>

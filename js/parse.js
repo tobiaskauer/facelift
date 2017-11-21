@@ -82,29 +82,6 @@ function parseCombinations(collation) {
 
 //parse global extreme values of all segnet value changes
 function segnetMinMax(combinations) {
-	//var allSegnets = {
-	//	"Sky": [],"Building": [],"Pole": [],"Road Marking": [],"Road": [],"Pavement": [],"Tree": [],"Sign Symbol": [],"Fence": [],"Vehicle": [],"Pedestrian": [],"Bike": []
-	//};
-	//Object.keys(combinations).forEach(function(key){
-	//	["Original","Beautified"].forEach(function(version) {
-	//		Object.keys(combinations[key][version].Segnet).forEach(function(segment) {
-	//			var value = combinations[key][version].Segnet[segment]
-	//			if(typeof value !== 'undefined') { //this is not perfect, since 0 values are ignored for the minMax... but i can live with it
-	//				allSegnets[segment].push(value)
-	//			} 
-	//		})
-	//	})
-	//})
-//
-	//Object.keys(combinations).forEach(function(key){
-	//		Object.keys(combinations[key][version].Segnet).forEach(function(segment) {
-	//			var value = combinations[key][version].Segnet[segment]
-	//			if(typeof value !== 'undefined') { //this is not perfect, since 0 values are ignored for the minMax... but i can live with it
-	//				allSegnets[segment].push(value)
-	//			} 
-	//		})
-	//})
-
 	var allSegnets = {
 		"Sky": {},"Building": {},"Pole": {},"Road Marking": {},"Road": {},"Pavement": {},"Tree": {},"Sign Symbol": {},"Fence": {},"Vehicle": {},"Pedestrian": {},"Bike": []
 	};
@@ -130,6 +107,7 @@ function segnetMinMax(combinations) {
 	var minMax = {};
 	Object.keys(allSegnets).forEach(function(segment) {
 		minMax[segment] = {}
+		minMax[segment].values = allSegnets[segment] //only necessary for DNA of
 		minMax[segment].minChange = allSegnets[segment].Change.reduce(function(a, b) {return Math.min(a, b);});
 		minMax[segment].maxChange = allSegnets[segment].Change.reduce(function(a, b) {return Math.max(a, b);});
 
@@ -145,9 +123,22 @@ function segnetMinMax(combinations) {
 		]
 		minMax[segment].max = max.reduce(function(a, b) {return Math.max(a, b)})
 	})
-
-	//Object.keys(allSegnets).forEach(function(segment){
-	//	allSegnets[segment] = allSegnets[segment].sort(function (a,b) {return  a - b;})
-	//})
 	return minMax;
+}
+
+function metricChange(combinations) {
+	var metrics = {GreenCover: {}, Openness: {}, Landmarks: {}, Walkability: {}, Complexity: {}}
+
+	var globalMetricChange = {};
+	Object.keys(metrics).forEach(function(metric){
+		globalMetricChange[metric] = [];
+		Object.keys(combinations).forEach(function(combination) {
+			var original = combinations[combination].Original.Metrics[metric]
+			var beautified = combinations[combination].Beautified.Metrics[metric]
+			var change = beautified - original;
+			globalMetricChange[metric].push(change)
+		})
+
+	})
+	return globalMetricChange;
 }

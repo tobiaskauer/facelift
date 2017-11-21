@@ -77,7 +77,7 @@ function openComparison(location, segnetMinMax) {
 		svg.selectAll("text").data(reverseLabels).enter()
 		.append("g")
 		.attr("transform",function(d,i){
-			return "translate("+position(i)+",10)"
+			return "translate("+position(i)+",14)"
 		})
 		.append("text")
 		.attr("id",function(d){return d.label})
@@ -93,6 +93,37 @@ function openComparison(location, segnetMinMax) {
 		var locationLabels = {};
 		locationLabels.Original = location.Original.Labels;
 		locationLabels.Beautified = location.Beautified.Labels;
+
+		//create labelDots
+		labelArray = []
+		reverseLabels.forEach(function(labelObject) {
+			labelArray.push(labelObject.label)
+		})
+		var dotOpacity = d3.scaleLinear().domain([0,4]).range([0,1])
+		var labelDots = svg.append("g").attr("class","labelDots")
+		Object.keys(locationLabels).forEach(function(version,i){
+			var dotGroup = labelDots.append("g").attr("class",version)
+			locationLabels[version].forEach(function(label,j) {
+				var labelPosition = labelArray.indexOf(label)
+				if(labelPosition > 0) {
+					dotGroup.append("rect")
+					.attr("width",function(){
+						return 5-i
+					})
+					.attr("height",5)
+					.attr("y",2)
+					.style("opacity",dotOpacity(j))
+					.attr("x",function(){
+						var padding = 0;
+						if(i){padding = 1}
+						return position(labelPosition) + padding
+					})
+					.attr("fill",function(){
+						if(i) {return "#08B3F7"} else {return "#F93A02"}
+					})
+				}
+			})
+		})
 
 		//color Labels when image is hovered
 		d3.selectAll(".comparison .Original, .comparison .Beautified")
@@ -110,7 +141,7 @@ function openComparison(location, segnetMinMax) {
 					.style("font-weight","bold")
 					.style("font-size","11")
 				} else {
-					currentElement.style("opacity",".2")
+					currentElement.style("opacity",".4")
 				}
 			})
 			
@@ -119,6 +150,10 @@ function openComparison(location, segnetMinMax) {
 			d3.select(this).style("opacity",1)
 			d3.selectAll(".segnetChart .dots, .segnetChart .changeBars").style("opacity",0)
 			d3.select(".segnetChart ."+version).style("opacity",1)
+			d3.selectAll(".labelDots g").style("opacity",0)
+			d3.selectAll(".labelDots g."+version).style("opacity",1)
+
+
 		})
 		.on("mouseout",function(){
 			d3.selectAll(".labelList text")
@@ -132,6 +167,7 @@ function openComparison(location, segnetMinMax) {
 			d3.selectAll(".comparison img").style("opacity",1)
 			d3.selectAll(".segnetChart .changeBars").style("opacity",1)
 			d3.selectAll(".segnetChart .dots").style("opacity",0)
+			d3.selectAll(".labelDots g").style("opacity",1)
 		})
 	}
 	
@@ -145,7 +181,7 @@ function openComparison(location, segnetMinMax) {
 
 	function segnetChart(location) {
 		var width = $(".comparison .segnetChart").width();
-		var height = 270
+		var height = 240
 		d3.select(".comparison .segnetChart").selectAll("*").remove()
 		var svg = d3.select(".comparison .segnetChart").append("svg").attr("width",width).attr("height",height)
 
@@ -165,7 +201,6 @@ function openComparison(location, segnetMinMax) {
 			var minChange = globalSegnetMinMax[segment].minChange;
 			var maxChange = globalSegnetMinMax[segment].maxChange;
 			var change = beautified - original;
-
 
 			
 			data[segment].Change = 2* ((change - minChange) / (maxChange - minChange)) -1
@@ -219,7 +254,7 @@ function openComparison(location, segnetMinMax) {
 			var x1 = width /2 + correction
 			var y1 = yPosition(i)
 			var p2 = xPosition(data[d].Change)
-			var p3 = yPosition(i) + 15
+			var p3 = yPosition(i) + 12
 			var p4 = width /2 + correction
 			return "M"+x1+" "+y1+" H "+p2+" V "+p3+" H "+p4+" L "+x1+" "+y1
 		})
@@ -228,18 +263,8 @@ function openComparison(location, segnetMinMax) {
 		labels.selectAll("text").data(Object.keys(data)).enter().append("text")
 		.attr("y",function(d,i){return yPosition(i) + 10})
 		.style("fill","white")
-		.style("font-size",11)
-		.attr("x",function(d){
-			//var correction = -2;
-			//if(data[d].Change < 0) {correction = 2}
-			//return width / 2 + correction
-			return 2
-		})
-		.style("text-anchor",function(d,i){
-			//if(data[d].Change < 0) {return "beginning"}
-			//else {return "end"}
-			return "beginning"
-		})
+		.style("font-size",10)
+		.attr("x",2)
 		.text(function(d){return d})
 
 		var versions = ["Original","Beautified"]
@@ -253,167 +278,8 @@ function openComparison(location, segnetMinMax) {
 				if(i) {return "#08B3F7"} else {return "#F93A02"}
 			})
 		})
-
-		
-
-
-
-		//scales
-		//var scale = {};
-		//Object.keys(globalSegnetMinMax).forEach(function(segment){
-		//	var size = globalSegnetMinMax[segment].length
-		//	scale[segment] = d3.scaleLinear().domain([0,size]).range([30,width])
-		//})
-		//var scalePosition = d3.scaleLinear().domain([0,11]).range([20,250]); // y position
-		
-		//get difference of each segment
-		//allSegments.forEach(function(segment,i){
-		//	var name = segment[0],
-		//		beautified = segment[2],
-		//		original= segment[1],
-		//		allValues = globalSegnetMinMax[name]
-		//	allSegments[i][3] = scale[name](allValues.indexOf(beautified)) - scale[name](allValues.indexOf(original))
-		//})
-		//var sortedSegments= allSegments.sort(function (a,b) {return  b[3] - a[3];}); // sort by decreasing relative difference 
-//
-		////lines + legend
-		//var axis = svg.append("g").attr("class","lines")
-		//axis.selectAll("line").data(sortedSegments).enter().append("line")
-		//.attr("x1",30)
-		//.attr("y1",function(d,i){return scalePosition(i)})
-		//.attr("x2",width)
-		//.attr("y2",function(d,i){return scalePosition(i)})
-		//.attr("stroke","white")
-		//.attr("opacity",".4")
-		//axis.selectAll("text").data(sortedSegments).enter().append("text")
-		//.attr("x",0)
-		//.attr("y",function(d,i){return scalePosition(i)})
-		//.text(function(d){return d[0]})
-		//.style("font-size",7)
-		//.style("fill","white")
-		//.attr("opacity",".7");
-//
-		////create gradients for increasing and decreasing bars
-		//var defs = svg.append("defs");
-		//var increase = defs.append("linearGradient").attr("id", "increase").attr("x1", "0%").attr("x2", "100%").attr("y1", "0%").attr("y2", "0%");
-		//	increase.append("stop").attr('class', 'start').attr("offset", "0%").attr("stop-color", "#F93A02").attr("stop-opacity", 1);
-		//	increase.append("stop").attr('class', 'end').attr("offset", "100%").attr("stop-color", "#08B3F7").attr("stop-opacity", 1);
-		//var decline = defs.append("linearGradient").attr("id", "decline").attr("x1", "0%").attr("x2", "100%").attr("y1", "0%").attr("y2", "0%");
-		//	decline.append("stop").attr('class', 'start').attr("offset", "0%").attr("stop-color", "#08B3F7").attr("stop-opacity", 1);
-		//	decline.append("stop").attr('class', 'end').attr("offset", "100%").attr("stop-color", "#F93A02").attr("stop-opacity", 1);
-		//
-		////draw shapes for comparison
-		//svg.append("g").attr("class","boxes").selectAll("polygon").data(sortedSegments).enter()
-		//.append("polygon")
-		//.attr("fill",function(d){
-		//	if(d[2] > d[1]) {return "url(#increase)"} else {return "url(#decline)"}
-		//})
-		//.attr("points",function(d,i){
-		//	var y1 = scalePosition(i) - 5
-		//	var y2 = y1 + 10;
-		//	var x1 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[1])); // Original... I'm actually surprised this works
-		//	var x2 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[2])); // Beautified
-		//	return x1+","+y1+" "+x2+","+(y1 + 3)+" "+x2+","+(y2 - 3)+" "+x1+","+y2+" "+x1+","+y1
-		//})
-//
-		////draw circles for both versions
-		//versions.forEach(function(version,i){
-		//	var circles = svg.append("g").attr("class",version).style("opacity",0)
-		//	circles.selectAll("circle").data(sortedSegments).enter().append("circle")
-		//	.attr("r",3)
-		//	.style("fill",function(d){
-		//		if(i){return "#08B3F7"}
-		//			else {return "#F93A02"}
-		//	})
-		//	.attr("cx",function(d,j){
-		//		return scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[i+1]))
-		//	})
-		//	.attr("cy",function(d,j){
-		//		return scalePosition(j)
-		//	})
-		//})
-
-
-
-		/*svg.append("g").attr("class","values").selectAll("path").data(sortedSegments).enter()
-		.append("path")
-		.attr("fill",function(d){
-			if(d[2] > d[1]) {return "url(#increase)"} else {return "url(#decline)"}
-		})
-		.attr("d",function(d,i){
-			var y1 = scalePosition(i) - 2
-			var y2 = y1 + 4;
-			var x1 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[1])); // Original... I'm actually surprised this works
-			var x2 = scale[d[0]](globalSegnetMinMax[d[0]].indexOf(d[2])); // Beautified
-			return "M"+x1+" "+y1+" H "+x2+" V "+y2+" H "+x1+" L "+x1+" "+y1+""
-		})*/
-
-
-
-	
-
-
-
-		//var scaleSegment = d3.scaleLinear().domain([0,segmentMinMax[1]]).range([0,width/2])
-		//var segmentPosition = d3.scaleLinear().domain([0,allSegments.length]).range([20,270])
-		//console.log(allSegments)
-		/*
-		//create bars
-		versions.forEach(function(version,i){
-			svg.append("g").attr("class",version).style("opacity",.7).selectAll("rect").data(allSegments).enter()
-			.append("rect").attr("height",15)
-			.attr("class",function(d){return d[0]})
-			
-			.attr("width",function(d){
-				return scaleSegment(d[i+1])
-			})
-			.attr("y",function(d,j){
-				return segmentPosition(j);
-			})
-			.style("fill",function(d){
-				if(i){return "#08B3F7"}
-					else {return "#F93A02"}
-			})
-			.attr("x",function(d){
-				if(i){return width/2}
-					else {return width/2 - scaleSegment(d[i+1])}
-			})
-		})
-
-		//create legend
-		svg.append("g").attr("class","legens").selectAll("text").data(allSegments).enter().append("text")
-		.attr("text-anchor",function(d){
-			if(width/2 +scaleSegment(d[2]) > (width * .75)) {
-				return "end";
-			} else {
-				return "beginning"
-			}
-		})
-		.attr("x",function(d){
-			var correction;
-			if(width/2 +scaleSegment(d[2]) > (width * .75)) {correction = -3} else {correction = 2}
-			return width/2 + scaleSegment(d[2]) + correction
-		})
-		.attr("fill","white")
-		.attr("font-size",9)
-		.attr("font-weight",300)
-		.attr("y",function(d,i){
-				return segmentPosition(i) + 10;
-			})
-		.text(function(d){
-			var plus = "";
-			if(d[3] > 0) {plus = "+"}
-			return plus+d[3]+'% '+d[0]
-		})*/
-	
-
-
 	}
 }
-
-
-
-
 
 
 function RadarChart(id, data, options, size) {
@@ -423,7 +289,7 @@ function RadarChart(id, data, options, size) {
 	 margin: {top: 20, right: 20, bottom: 20, left: 20}, //The margins of the SVG
 	 levels: 3,				//How many levels or inner circles should there be drawn
 	 maxValue: 0, 			//What is the value that the biggest circle will represent
-	 labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
+	 labelFactor: 1.1, 	//How much farther than the radius of the outer circle should the labels be placed
 	 wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
 	 opacityArea: 0.15, 	//The opacity of the area of the blob
 	 dotRadius: 4, 			//The size of the colored circles of each blog
@@ -501,7 +367,7 @@ function RadarChart(id, data, options, size) {
 		//.style("filter" , "url(#glow)");
 
 	//Text indicating at what % each level is
-	axisGrid.selectAll(".axisLabel")
+	/*axisGrid.selectAll(".axisLabel")
 	   .data(d3.range(1,(cfg.levels+1)).reverse())
 	   .enter().append("text")
 	   .attr("class", "axisLabel")
@@ -511,6 +377,7 @@ function RadarChart(id, data, options, size) {
 	   .style("font-size", "10px")
 	   .attr("fill", "#737373")
 	   .text(function(d,i) { return Format(maxValue * d/cfg.levels); });
+	*/
 
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////
@@ -526,16 +393,16 @@ function RadarChart(id, data, options, size) {
 	axis.append("line")
 		.attr("x1", 0)
 		.attr("y1", 0)
-		.attr("x2", function(d, i){ return rScale(maxValue*1.1) * Math.cos(angleSlice*i - Math.PI/2); })
-		.attr("y2", function(d, i){ return rScale(maxValue*1.1) * Math.sin(angleSlice*i - Math.PI/2); })
+		.attr("x2", function(d, i){ return rScale(maxValue) * Math.cos(angleSlice*i - Math.PI/2); })
+		.attr("y2", function(d, i){ return rScale(maxValue) * Math.sin(angleSlice*i - Math.PI/2); })
 		.attr("class", "line")
-		.style("stroke", "white")
-		.style("stroke-width", "2px");
+		.style("stroke", "lightgrey")
+		.style("stroke-width", "1px");
 
 	//Append the labels at each axis
 	axis.append("text")
 		.attr("class", "legend")
-		.style("font-size", "9px")
+		.style("font-size", "10px")
 		.attr("text-anchor", "middle")
 		.attr("dy", "0.35em")
 		.attr("x", function(d, i){ return rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice*i - Math.PI/2); })
@@ -631,7 +498,7 @@ function RadarChart(id, data, options, size) {
 		.attr("cy", function(d,i){ return rScale(d.value) * Math.sin(angleSlice*i - Math.PI/2); })
 		.style("fill", "none")
 		.style("pointer-events", "all")
-		.on("mouseover", function(d,i) {
+		/*.on("mouseover", function(d,i) {
 			newX =  parseFloat(d3.select(this).attr('cx')) - 10;
 			newY =  parseFloat(d3.select(this).attr('cy')) - 10;
 					
@@ -645,7 +512,7 @@ function RadarChart(id, data, options, size) {
 		.on("mouseout", function(){
 			tooltip.transition().duration(200)
 				.style("opacity", 0);
-		});
+		});*/
 		
 	//Set up the small tooltip for when you hover over a circle
 	var tooltip = g.append("text")
