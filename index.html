@@ -57,7 +57,7 @@
 				</svg></div>
 				<div class="row">
 					<div class="col-12 description">
-						<div class="helper" style="z-index: 20; top: 80px; left: -50px;"><div>Move over the scene you wish to focus. <span class="closer">Got it!</span></div><img src="img/helper2.png" / style="margin-left: 50px"></div>
+						<div class="helper" style="z-index: 20; top: 80px; left: -50px;"><div>Hover the image you wish to focus. <span class="closer">Got it!</span></div><img src="img/helper2.png" / style="margin-left: 50px"></div>
 						<span class="key"></span><!--<p><br><strong>How has this location changed?</strong></p>-->
 					</div>
 				</div>
@@ -66,10 +66,11 @@
 					<div class="col-6 c2"><h5>Beautified Location</h5></div>
 				</div>
 				<div class="row">
+					<h5 class="labelH" style="text-align: center;position: absolute; width: 95%; padding-top: 30px">Urban Scences</h5>
 					<div class="col-12 labelList"></div>
 				</div>
-				<div class="row">
-					<div class="col-6">
+				<div class="row" style="padding-top: 10px; border-top: 1px dotted grey">
+					<div class="col-6" style="border-right: 1px dotted grey">
 						<h5>Urban Design Metrics</h5>
 						<div class="radarChart"></div>
 						<!--<p style="text-align: center;">The five Urban Design Metrics indicate, how livable the <span style="font-weight: bold; color: #F93A02;">original place</span> and its <span style="font-weight: bold; color: #08B3F7;">beautified alternative</span> are.</p>-->
@@ -90,11 +91,12 @@
 			<div class="col-12">
 				<div class="intro">
 					<h1><img src="img/facelift.png" alt="facelift" /></h1>
-					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at the time.</p><p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning "<i>black box</i>". With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
+					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at a time.</p>
+					<p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning "<i>black box</i>". With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
 					<p><strong><i>"Beauty is nothing other than the promise of happiness"</i></strong><br>Stendhal, On Love.</p>
 					<!--<p><strong>Can <i>Machine Learning</i> tell us, how  future cities will look like?</strong> Probably not! But it can help to analzye urban imagery at scale and help us to explore spatial patterns of beauty.</p>
 					<p>Facelift is a Deep Neural Network, that generates more beautiful versions of a given location. By Mapping and comparing these images and their metadata, we ca get a grasp of the networks understanding of urban aesthetics.</p>-->
-					 <a href="#start">Explore Boston with FACELIFT</a>
+					 <a class="button" href="#start">Explore Boston with FACELIFT</a><br><small><a class="small" href="#about">No, first tell me more about it.</a></small>
 				</div>
 			</div>
 		</div>
@@ -131,14 +133,25 @@
 			</div>
 		</div>
 	</div>
-	<div class="container" id="dna" style="background: white">
+
+	<div class="container-fluid" id="dna" style="background: white; color: #4A4A4A">
 		<div class="row" style="margin-top: 25px;">
-			<div class="col-8" style="color: darkgrey">
+			<div class="col">
 				<h6>The DNA of Beauty</h6>
-				<p>We can compare the changes in Urban Elements (left) and Urban Design Metrics (right) for all beautified locations. Blue bars indicate an increase in the beautified location, red bars mean, that there is less of that element or metric.
 			</div>
 		</div>
-		<div class="dna row justify-content-center" style="margin-bottom: 25px;">
+		<div class="row">
+			<div class="col-7" style="color: #4A4A4A">
+				<p>We can compare the changes in Urban Elements (left) and Urban Design Metrics (right) for all beautified locations. Blue bars indicate an increase in the beautified location, red bars mean, that there is less of that element or metric.
+			</div>
+			<div class="col-5" style="text-align: right">
+				<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+				  <button type="button" class="normalized btn btn-secondary btn-sm active">Normalized</button>
+				  <button type="button" class="absolute btn btn-secondary btn-sm">Absolute</button>
+				</div>
+			</div>
+		</div>
+		<div class="dna row justify-content-center" style="margin-bottom: 25px">
 			<div class="col-8" style="border-right: 1px lightgrey dotted">
 				<div class="elementDNA"></div>
 			</div>
@@ -146,9 +159,47 @@
 				<div class="metricDNA"></div>
 			</div>
 		</div>
+	</div>
+	<div class="container-fluid" id="about" style="background: white; border-top: 1px lightgrey dotted; color: #4A4A4A">
+		<div class="row" style="margin-top: 25px">
+			<div class="col-6">
+				<h6>How does it work?</h6>
+			</div>
 		</div>
+		<div class="row">
+			<div class="col-12">
+				<img src="img/explanation-2000.png" style="width: 100%"/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-2">
+				<strong>Rating images</strong>
+				<p>Images of urban places are rated by humans in pairs to determine, which one is more beautiful. We then transform these ratings to absolute ranks using TrueSkill.</p>
+			</div>
+			<div class="col-1">
+				<strong>Training Data</strong>
+				<p>These most beautiful and ugliest images are used as Training Data</p>
+			</div>
+			<div class="col-2">
+				<strong>Deep Learning</strong>
+				<p>A neural network is then trained on visual cues of beauty and ugliness.</p>
+			</div>
+			<div class="col-3">
+				<strong>Beautiful and Ugly Combinations</strong>
+				<p>An original (ugly) image is then used as Input for the Beautification Process. The network generates a template using Generative models, maximizing the visual cues for beauty in accordance with the network’s knowledge. Since this template does not (yet) look like an actual place, we search for similar images in our database to find the closest match.</p>
+			</div>
+			<div class="col-2">
+				<strong>Analysis and Computation</strong>
+				<p>Both, the original and the beautiful images are then analyzed: PlacesNet detects possible Scene types in the image. SegNet shows, what urban elements are visible in the image. Using these insights, we can calculate Urban Design Metrics.</p>
+			</div>
+			<div class="col-2">
+				<strong>Visualization & Comparison</strong>
+				<p>As a result, we can display the visualizations above</p>
+			</div>
+		</div>
+	</div>
 	<div class="container-fluid" style="padding: 25px 0; background: #242426;">
-		<form>
+		<form action="php/mail.php" method="POST">
 			<div class="row justify-content-center formHeadline">
 				<div class="col-6">
 					<h6>Practitioners Questionnaire</h6>
@@ -200,62 +251,62 @@
 			</div>
 			<div class="row justify-content-center formHeadline">
 				<div class="col-6">
-					<h6>Task 1 / 6: Spatial Patterns</h6>
+					<h6>Spatial Patterns</h6>
 					<hr style="border-color: grey">
 					
 				</div>
 			</div>
 			<div class="row justify-content-center">
-				<div class="col-2"><img src="img/labelSelect.gif"></div>
-				<div class="col-4">
+				<!--<div class="col-2"><img src="img/labelSelect.gif"></div>-->
+				<div class="col-6">
 					<p><strong>Select multiple labels on the map and consider that labels are ordered by beauty. Identify the areas that are beautiful and ugly. Select the true statement (multiple selection possible):</strong></p>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					   West more beautiful than East
+					   <strong>West</strong> more beautiful than <strong>East</strong>
 					  </label>
 					</div>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					  	East more beautiful than West
+					  	<strong>East</strong> more beautiful than <strong>West</strong>
 					  </label>
 					</div>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					    North more beautiful than South
+					    <strong>North</strong> more beautiful than <strong>South</strong>
 					  </label>
 					</div>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					    South more beautiful than North
+					    <strong>South</strong> more beautiful than <strong>North</strong>
 					  </label>
 					</div>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					    South more beautiful than East
+					    <strong>South</strong> more beautiful than <strong>East</strong>
 					  </label>
 					</div>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					    North more beautiful than West
+					    <strong>North</strong> more beautiful than <strong>West</strong>
 					  </label>
 					</div>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
-					     I can not find any patterns.
+					     <strong>I can not see any patterns.</strong>
 					  </label>
 					</div>
 				</div>
 			</div>
 			<div class="row justify-content-center formHeadline">
 				<div class="col-6">
-					<h6>Task 2 / 6: Urban Design Metrics</h6>
+					<h6>Urban Design Metrics</h6>
 					<hr style="border-color: grey">
 					
 				</div>
 			</div>
 			<div class="row justify-content-center">
-				<div class="col-2"><img src="img/metrics.gif"></div>
-				<div class="col-4">
+				<!--<div class="col-2"><img src="img/metrics.gif"></div>-->
+				<div class="col-6">
 					<p><strong>Explore several beautification examples. Based on the presented data, what urban design metrics are typically associated with beauty (multiple selection possible)?</strong></p>
 					<div class="form-check">
 					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
@@ -289,13 +340,185 @@
 					</div>
 				</div>
 			</div>
+			<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Urban Elements</h6>
+					<hr style="border-color: grey">
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<!--<div class="col-2"><img src="img/elements.png"></div>-->
+				<div class="col-6">
+					<p><strong>Explore several beautification examples. What are urban elements, that typically increase during beautification?</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	Pedestrian
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	Pavement
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Building
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Tree
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Road Marking
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	Fence
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Sign Symbol
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Road
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Vehicle
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	Sky
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Bike
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Pole
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  	none of the above, but i would love to see how [________] performs.
+					  </label>
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Urban Scenes</h6>
+					<hr style="border-color: grey">
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<!--<div class="col-2"><img src="img/metrics.gif"></div>-->
+				<div class="col-6">
+					<p><strong>Explore several beautification examples. How helpful are the labels to you in order to understand, how this location has changed?</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    very helpful
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  a bit helpful
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    not very helpful
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    i don't understand what this is
+					  </label>
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Beautification Accountability</h6>
+					<hr style="border-color: grey">
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<!--<div class="col-2"><img src="img/metrics.gif"></div>-->
+				<div class="col-6">
+					<p><strong>Roughly, how often do you think the beautified images are actually more beautiful?</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Everytime
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  Most of the time
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Some times
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					   Never
+					  </label>
+					</div>
+				</div>
+			</div>
+						<div class="row justify-content-center formHeadline">
+				<div class="col-6">
+					<h6>Data Accountability</h6>
+					<hr style="border-color: grey">
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<!--<div class="col-2"><img src="img/metrics.gif"></div>-->
+				<div class="col-6">
+					<p><strong>Roughly, how often do you think the shown data (metrics, elements and scenes) actually describes the change seen in the images??</strong></p>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Everytime
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					  Most of the time
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					    Some times
+					  </label>
+					</div>
+					<div class="form-check">
+					  <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">
+					   Never
+					  </label>
+					</div>
+				</div>
+			</div>
 			<div class="row justify-content-center">
 				<div class="col-6">
 					<hr style="border-color: grey">
 					<button type="submit" class="btn btn-primary">Submit</button>
 					<p>Thanks you for your help!</p>
 				</div>
-				
 			</div>
 		</form>
 	</p></p></div>
@@ -307,12 +530,14 @@
     	sortedLabels, 
     	hotLabels = [],
     	combinations,
-    	map = L.map('map').setView([42.3488, -71.07702], 13),
+    	map = L.map('map').setView([42.3488, -71.07702], 12),
     	heat = L.heatLayer,
     	circleLayer = L.layerGroup({interactive: false}).addTo(map);
 
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors', maxZoom: 18,}).addTo(map);
-		
+	map.scrollWheelZoom.disable();
+	map.options.keyboard = false;
+
 	//pre-load all necessary json files, then run init()
     queue().defer(d3.json, 'data/BostonCollatedV4.json').await(init);
 
@@ -323,7 +548,6 @@
 		
 		combinations = parseCombinations(collatedJson);
 		globalSegnetMinMax = segnetMinMax(combinations);
-		globalMetricChange = metricChange(combinations);
 
 		showCombinationsOnMap(globalSegnetMinMax);
 		createList(sortedLabels);
@@ -331,9 +555,9 @@
 		//reverseLookup(trueSkillCoordinates);
 		//drawMetricComparison();
 		//labelBeauty();
-
-		elementDNA(globalSegnetMinMax);
-		metricDNA(globalMetricChange);
+		var changes = allChanges(combinations)
+		drawDNA(changes,"Segnet",true)
+		drawDNA(changes,"Metrics",true)
 	} 
 	
 	</script>

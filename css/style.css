@@ -1,8 +1,8 @@
 body {
-	font-size: 11px;
+	font-size: 13px;
 	font-family: 'Lato', sans-serif;
 	font-weight: 300;
-	line-height: 15px;
+	line-height: 16px;
 
 	color: #d2d2d2;
 }
@@ -22,6 +22,9 @@ body {
 	list-style: none;
 	text-align: left;
 	padding-left: 10px;
+}
+#labels ul li:hover {
+	cursor: pointer;
 }
 .active, .hotLabel {
 	font-weight: bold;
@@ -69,6 +72,9 @@ form img {
 	margin: 0 0 10px 0;
 }
 
+#dna button {
+	font-size: 12px
+}
 
 
 .spacer {height: 25px;}
@@ -76,16 +82,16 @@ form img {
 
 .intro {
 	height: 100vh;
-	width: 50%;
+	width: 70%;
 	margin: 0 auto;
 	padding-top: 5%;
 	min-height: 300px;
 	min-width: 400px;
-	max-width: 800px;
+	max-width: 1000px;
 	text-align: center;
 }
 
-.intro a {
+.intro a.button {
 	border: 1px solid #08B3F7;
 	border-radius: 4px;
 	padding: 20px 30px;
@@ -93,6 +99,12 @@ form img {
 	font-size: 14px;
 	display: inline-block;
 	font-weight: 600;
+}
+
+.intro a.small {
+	color: #08B3F7;
+	text-decoration: none;
+	margin-top: 10px
 }
 
 .intro p {

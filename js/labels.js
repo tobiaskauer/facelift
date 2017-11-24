@@ -41,9 +41,9 @@
 	function getLabelSize(value, totalMinMax, logScale) {
 		var scale;
 		if(logScale) {
-			scale = d3.scaleLog().domain([totalMinMax[0],totalMinMax[1]]).range([5,20]);
+			scale = d3.scaleLog().domain([totalMinMax[0],totalMinMax[1]]).range([9,14]);
 		} else {
-			scale = d3.scaleLinear().domain([totalMinMax[0],totalMinMax[1]]).range([5,20]);
+			scale = d3.scaleLinear().domain([totalMinMax[0],totalMinMax[1]]).range([9,14]);
 		}
 		return scale(value);
 	}

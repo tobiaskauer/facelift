@@ -126,19 +126,81 @@ function segnetMinMax(combinations) {
 	return minMax;
 }
 
-function metricChange(combinations) {
-	var metrics = {GreenCover: {}, Openness: {}, Landmarks: {}, Walkability: {}, Complexity: {}}
+function allChanges(combinations) {
+	var dimensions = {
+		'Metrics': {
+			'GreenCover': {},
+			'Openness': {},
+			'Landmarks': {},
+			'Walkability': {},
+			'Complexity': {}
+		},
+		'Segnet': {
+			'Sky': {},
+			'Building': {},
+			'Pole': {},
+			'Road Marking': {},
+			'Road': {},
+			'Pavement': {},
+			'Tree': {},
+			'Sign Symbol': {},
+			'Fence': {},
+			'Vehicle': {},
+			'Pedestrian': {},
+			'Bike': {}
+		}
+	}
 
-	var globalMetricChange = {};
-	Object.keys(metrics).forEach(function(metric){
-		globalMetricChange[metric] = [];
-		Object.keys(combinations).forEach(function(combination) {
-			var original = combinations[combination].Original.Metrics[metric]
-			var beautified = combinations[combination].Beautified.Metrics[metric]
-			var change = beautified - original;
-			globalMetricChange[metric].push(change)
+	Object.keys(dimensions).forEach(function(dimension){
+		var maxDimension = 0
+		Object.keys(dimensions[dimension]).forEach(function(element){
+			var elements = dimensions[dimension]
+			var versions = ["Original","Beautified"]
+
+			versions.forEach(function(version) {
+				elements[element][version] = []
+				elements[element].Change = []
+			})
+			Object.keys(combinations).forEach(function(key){
+				var original = combinations[key].Original[dimension][element];
+				if(typeof original === 'undefined') {original = 0};
+				var beautified = combinations[key].Beautified[dimension][element];
+				if(typeof beautified === 'undefined') {beautified = 0};
+				var change = beautified - original
+				
+				elements[element].Original.push(original)
+				elements[element].Beautified.push(beautified)
+				elements[element].Change.push(change)
+				//get biggest value within dimension
+				if(change > maxDimension) {maxDimension = change}
+			})
 		})
 
+		var minMax = {};
+		Object.keys(dimensions[dimension]).forEach(function(element){
+			var elements = dimensions[dimension]
+			minMax[element] = {}
+			minMax[element].values = 	elements[element] //only necessary for DNA of
+			minMax[element].minChange = 	elements[element].Change.reduce(function(a, b) {return Math.min(a, b);});
+			minMax[element].maxChange = 	elements[element].Change.reduce(function(a, b) {return Math.max(a, b);});
+		//
+			var min = [
+				elements[element].Original.reduce(function(a, b) {return Math.min(a, b)}),
+				elements[element].Beautified.reduce(function(a, b) {return Math.min(a, b)})
+			]
+			minMax[element].min = min.reduce(function(a, b) {return Math.min(a, b)})
+		//
+			var max = [
+				elements[element].Original.reduce(function(a, b) {return Math.max(a, b)}),
+				elements[element].Beautified.reduce(function(a, b) {return Math.max(a, b)})
+			]
+			minMax[element].max = max.reduce(function(a, b) {return Math.max(a, b)})
+			
+		})
+		//get biggest value within dimension
+		dimensions[dimension].max = maxDimension
+
+		dimensions[dimension].values = minMax
 	})
-	return globalMetricChange;
+	return dimensions
 }
