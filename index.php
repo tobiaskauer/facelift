@@ -107,7 +107,9 @@
 			<div class="col-12">
 				<div class="intro">
 					<h1><img src="img/facelift.png" alt="facelift" /></h1>
-					<h2><font color="blue"> BEAUTIFYING THE WORLD</font></h2>
+					<div class="subTitle">
+						<h2> BEAUTIFYING THE WORLD </h2>
+					</div>
 					<!-- <p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at a time.</p>
 					<p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning "<i>black box</i>". With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
 					<p><strong><i>"Beauty is nothing other than the promise of happiness"</i></strong><br>Stendhal, On Love.</p> -->

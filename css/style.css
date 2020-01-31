@@ -102,6 +102,12 @@ form img {
 
 .spacer {height: 25px;}
 
+.subTitle {
+	text-align: center;
+	background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
 
 .intro {
 	height: 100vh;
