@@ -107,11 +107,21 @@
 			<div class="col-12">
 				<div class="intro">
 					<h1><img src="img/facelift.png" alt="facelift" /></h1>
-					<p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at a time.</p>
+					<h2><font color="blue"> BEAUTIFYING THE WORLD</font></h2>
+					<!-- <p>Buildings and neighbourhoods speak. They speak of egalitarianism or elitism, beauty or ugliness, acceptance or arrogance. The aim of Facelift is to celebrate egalitarianism, beauty, and acceptance by beautifying the entire world, one Google Street view at a time.</p>
 					<p>All of this is done by designing state-of-the-art technologies that make it possible to smarten a street view and read inside the Deep Learning "<i>black box</i>". With further developments of these technologies, we would be more likely to systematically understand and re-create the environments we intuitively love. </p>
-					<p><strong><i>"Beauty is nothing other than the promise of happiness"</i></strong><br>Stendhal, On Love.</p>
+					<p><strong><i>"Beauty is nothing other than the promise of happiness"</i></strong><br>Stendhal, On Love.</p> -->
 					<!--<p><strong>Can <i>Machine Learning</i> tell us, how  future cities will look like?</strong> Probably not! But it can help to analzye urban imagery at scale and help us to explore spatial patterns of beauty.</p>
 					<p>Facelift is a Deep Neural Network, that generates more beautiful versions of a given location. By Mapping and comparing these images and their metadata, we ca get a grasp of the networks understanding of urban aesthetics.</p>-->
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
 					 <a class="button" href="#start">Explore Boston with FACELIFT</a><br><small><a class="small" href="#about">No, first tell me more about it.</a></small>
 				</div>
 			</div>
