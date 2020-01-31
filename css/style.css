@@ -113,6 +113,41 @@ form img {
 	max-width: 1000px;
 	text-align: center;
 }
+.press {
+	height: 50vh;
+	width: 70%;
+	margin: 0 auto;
+	padding-top: 2%;
+	min-height: 300px;
+	min-width: 400px;
+	max-width: 1000px;
+	font-size: 18px;
+	text-align: center;
+}
+
+.publications {
+	height: 50vh;
+	width: 70%;
+	margin: 0 auto;
+	padding-top: 2%;
+	min-height: 300px;
+	min-width: 400px;
+	max-width: 1000px;
+	font-size: 18px;
+	text-align: center;
+}
+
+.coverage {
+	height: 50vh;
+	width: 70%;
+	margin: 0 auto;
+	padding-top: 2%;
+	min-height: 300px;
+	min-width: 400px;
+	max-width: 1000px;
+	font-size: 18px;
+	text-align: center;
+}
 
 .intro a.button {
 	border: 1px solid #08B3F7;

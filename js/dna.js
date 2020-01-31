@@ -3,6 +3,7 @@ function drawDNA(data,vis,normalized) {
 	var order;
 	var elementCount;
 	var pass = data
+	console.log(data)
 
 	d3.select("#dna button.normalized").on("click",function(){
 		drawDNA(pass,"Segnet",true)
