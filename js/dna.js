@@ -28,7 +28,8 @@ function drawDNA(data,vis,normalized) {
 	}
 	if(vis=="Metrics") {
 		div = ".metricDNA"
-		order = ordered_metrics = ["Landmarks", "Openness", "GreenCover", "Walkability", "Complexity"]
+		// order = ordered_metrics = ["Landmarks", "Openness", "GreenCover", "Walkability", "Complexity"]
+		order = ordered_metrics = [ "Openness", "GreenCover", "Walkability", "Complexity"]
 		elementCount = data.Openness.values.Change.length
 	}
 
