@@ -230,10 +230,6 @@
 	<div class="container-fluid" id="about" style="background: white; border-top: 1px lightgrey dotted; color: #4A4A4A">
 
 		<div class="press">
-		<div>
-			<h2>FaceLift: Press Release</h6>
-		</div>
-		
 
 	        	<p>AI algorithms have been used to predict whether people are likely to find a particular urban scene pleasant or not by learning from known human preferences. Indeed, there are specific urban elements that are universally considered beautiful: from greenery, to small streets, to memorable spaces.</p>
 
@@ -287,7 +283,7 @@
 	<div class="container-fluid" id="about" style="background: white; border-top: 1px lightgrey dotted; color: #4A4A4A">
 		<div class="coverage">
 			<div>
-				<h6>Data, Models and Code</h6>
+				<h2>Data, Models, and Code</h2>
 			</div>
 		    <ul>
 	            <li style="text-decoration:none;">
