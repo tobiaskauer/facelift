@@ -18,17 +18,40 @@ body {
 	padding: 0 0 0 0 ;
 }
 
-#labels ul li {
+#labels ul li  {
 	list-style: none;
+	height: 10px;
+}
+
+#labels ul li input[type=checkbox]  {
+
+  -ms-transform: scale(.6); /* IE */
+  -moz-transform: scale(.6); /* FF */
+  -webkit-transform: scale(.6); /* Safari and Chrome */
+  -o-transform: scale(.6); /* Opera */
+
+}
+
+#labels ul li span {
+
 	text-align: left;
-	padding-left: 10px;
+	padding-left: 5px;
 }
 #labels ul li:hover {
 	cursor: pointer;
 }
 .active, .hotLabel {
-	font-weight: bold;
-	padding-left: 0px !important;
+	//font-weight: bold;
+}
+#labels ul li div.check {
+	display: inline-block;
+	background: url(../img/check.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 8px 8px;
+	width: 10px;
+	height: 10px;
+	opacity: 0;
 }
 
 path.links  {
@@ -205,4 +228,8 @@ form img {
 
 .helper .closer:hover {
 	cursor: pointer;
+}
+
+.row {
+    flex-wrap: nowrap !important; 
 }

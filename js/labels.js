@@ -8,14 +8,23 @@
 		Object.keys(labels).forEach(function(label){
 			//calculate mean TrueSkill Score for each label
 			var mean = [];
+			var certaintySum = 0;
 			Object.keys(labels[label]).forEach(function(key){
 				var trueSkill = labels[label][key].trueSkill;
-				mean.push(trueSkill);
+				var certainty = labels[label][key].Certainty
+
+				certaintySum = certaintySum + certainty
+				mean.push(trueSkill * certainty);
 			})
+			
 	
 			//write array of labels
 			if(mean.length > treshold) { //5 is a random value to reduce number of labels with not enough frequency (currently resulting in ~50 labels)
-				var avg = mean.reduce(function(a,b){return a+b},0) / mean.length
+				//THIS IS FOR THE NON WEIGHTED VERSION
+				//var avg = mean.reduce(function(a,b){return a+b},0) / mean.length
+
+				var avg = mean.reduce(function(a,b){return a+b}) / certaintySum
+
 				if(avg < meanMinMax[0]) {meanMinMax[0] = avg}
 				if(avg > meanMinMax[1]) {meanMinMax[1] = avg}
 	
@@ -33,7 +42,7 @@
 	
 		//sort labels descending by mean TrueSkill
 		var sortedLabels = labelList.sort(function (a,b) {return  b.mean - a.mean;});
-	
+		console.log(sortedLabels)
 	
 		return [sortedLabels, meanMinMax, totalMinMax]
 	}
@@ -62,8 +71,13 @@
 		d3.select("#labels ul").remove();
 		var ulLabels = d3.select("#labels").append("ul");
 	
-		ulLabels.selectAll("li").data(sortedLabels).enter().append("li")
-		.text(function(d){
+		var listItem = ulLabels.selectAll("li").data(sortedLabels).enter().append("li")
+
+		listItem.append("div").attr("class",function(d){
+			return "check "+d.label
+		})
+
+		listItem.append("span").text(function(d){
 			return d.label
 		})
 		.style("color",function(d){return scaleMean(d.mean)})
@@ -77,11 +91,16 @@
 	
 		//If hovered, toggle "active" class and trigger function, that collects mouseOver-actions
 		.on("mouseover",function(d){
-			d3.select(this).classed("active",true);
+			//d3.select(this).classed("active",true);
+			d3.select(".check."+d.label).style("opacity",1)
 			mouseOverLabel(d.label);
 		})
 		.on("mouseout",function(d){
 			d3.select(this).classed("active",false);
+			if(!d3.select(this).classed("hotLabel")) {
+				d3.select(".check."+d.label).style("opacity",0)
+			}
+			drawHeatMap();
 		})
 	
 		//if clicked, toggle "hotLabel"-class as add current label to list of hot labels.
@@ -90,11 +109,13 @@
 			if(currentLabel.classed("hotLabel")) {
 				var position = hotLabels.indexOf(d.label);
 				splice = hotLabels.splice(position,1);
+				d3.select(".check."+d.label).style("opacity",0)
 	
 				currentLabel.classed("hotLabel",false)
 			} else {
 				hotLabels.push(d.label);
 				currentLabel.classed("hotLabel",true)
+				d3.select(".check."+d.label).style("opacity",1)
 			}
 		})
 	} 

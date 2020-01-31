@@ -21,13 +21,13 @@ function drawDNA(data,vis,normalized) {
 	data = data[vis].values
 	if(vis=="Segnet") {
 		div = ".elementDNA"
-		order = ["Sign Symbol","Bike","Tree","Pavement","Pole","Vehicle","Fence","Building","Sky","Road Marking","Pedestrian","Road"]
-		order = order.reverse()
+		//order = ["Sky","Road","Tree","Pavement","Pole","Vehicle","Fence","Building","Sky","Road Marking","Pedestrian","Road"]
+		order = ["Road", "Sky", "Vehicle", "Road Marking", "Building", "Fence", "Bike", "Sign Symbol", "Pedestrian", "Pole", "Pavement", "Tree"]
 		elementCount = data.Sky.values.Change.length
 	}
 	if(vis=="Metrics") {
 		div = ".metricDNA"
-		order = ordered_metrics = ["Landmarks","Openness","Walkability","GreenCover","Complexity"]
+		order = ordered_metrics = ["Landmarks", "Openness", "GreenCover", "Walkability", "Complexity"]
 		elementCount = data.Openness.values.Change.length
 	}
 
@@ -41,20 +41,44 @@ function drawDNA(data,vis,normalized) {
 	var yPos = d3.scaleLinear().domain([0,elementCount]).range([12,height])
 	var opacityScale = d3.scaleLinear().domain([0,max]).range([0,1])
 
+	var mean = []
 	order.forEach(function(container,i) {
-		var group = svg.append("g").attr("class","values "+container)
-		group.on("mouseover",function(){
-			d3.selectAll(".dna .values").style("opacity",0.1)
-			d3.select(this).style("opacity",1)
-		})
-		.on("mouseout",function(){
-			d3.selectAll(".dna .values").style("opacity",1)
-		})
+		var arr = data[container].values.Change
+		var sum = arr.reduce(function(a,b){return a+b})
+		mean.push(sum /  arr.length)
+
+		//let median = (arr[(arr.length - 1) >> 1] + arr[arr.length >> 1]) / 2
+		//mean.push(median)
+		//console.log(median)
+	})
+	//var legendColor = d3.scaleLinear().domain([mean[0],mean[mean.length-1]]).range(["#F93A02","#08B3F7"])
+	var legendColor = d3.scaleLinear().domain([-1,1]).range(["#F93A02","#08B3F7"])
+
+
+
+	order.forEach(function(container,i) {
+		var group = svg.append("g").attr("class","values "+container).attr("height",height)
+
+		//legend
+		group.append("text").text(container)
+		.attr("y",8)
+		.attr("x",function(d,j){return xPos(i) + ((width/Object.keys(data).length) -1) / 2})
+		.attr("fill",legendColor(mean[i]))
+		.style("font-size",9)
+		.attr("text-anchor","middle")
+
+		//group.on("mouseover",function(){
+		//	d3.selectAll(".dna .values").style("opacity",0.1)
+		//	d3.select(this).style("opacity",1)
+		//})
+		//.on("mouseout",function(){
+		//	d3.selectAll(".dna .values").style("opacity",1)
+		//})
 
 		group.selectAll("rect").data(data[container].values.Change).enter()
 		.append("g").attr("class",function(d,j){return "combination"+(j+1)}).append("rect")
-		.attr("width",width/Object.keys(data).length)
-		.attr("height",height/elementCount)
+		.attr("width",(width/Object.keys(data).length) -1)
+		.attr("height",(height/elementCount) -1)
 		.attr("class",function(d,j){return "combination"+(j+1)})
 		.attr("x",function(d,j){return xPos(i)})
 		.attr("y",function(d,j){return yPos(j)})
@@ -76,15 +100,4 @@ function drawDNA(data,vis,normalized) {
 			return Math.abs(value)
 		})
 	})
-	//labels
-	var labels = svg.append("g").attr("class","labels")
-	labels.selectAll("text").data(order).enter().append("text")
-	.attr("x",function(d,i){
-		return xPos(i)+ (width/Object.keys(data).length / 2)
-	})
-	.attr("y",8)
-	.attr("fill","darkgrey")
-	.style("font-size",9)
-	.attr("text-anchor","middle")
-	.text(function(d){return d})
 }

@@ -1,6 +1,5 @@
 
 function openComparison(location, segnetMinMax) {
-   // console.log(location)
     $("#overlay").fadeIn();
     $(".closeOverlay").click(function(){
         $("#overlay").fadeOut();
@@ -23,6 +22,8 @@ function openComparison(location, segnetMinMax) {
    	new Image().src = "img/BostonBeautified/"+prevLocation.Beautified.Key+".jpg";
    	new Image().src = "img/BostonBeautified/"+nextLocation.Original.Key+".jpg";
    	new Image().src = "img/BostonBeautified/"+nextLocation.Beautified.Key+".jpg";
+   	$(".prevLocation a").attr("href","#"+combinationsArray[prevKey])
+   	$(".nextLocation a").attr("href","#"+combinationsArray[nextKey])
    	d3.select(".prevLocation").on("click",function(){openComparison(prevLocation)});
    	d3.select(".nextLocation").on("click",function(){openComparison(nextLocation)});
 
@@ -155,6 +156,9 @@ function openComparison(location, segnetMinMax) {
 			d3.selectAll(".labelDots g").style("opacity",0)
 			d3.select(".labelH").style("opacity",0)
 			d3.selectAll(".labelDots g."+version).style("opacity",1)
+			d3.selectAll("g.changeScale").style("opacity",0)
+			d3.selectAll("g.absScale").style("opacity",1)
+			d3.selectAll(".urbanElements h5").text("Presence of Urban Elements")
 
 
 		})
@@ -172,6 +176,9 @@ function openComparison(location, segnetMinMax) {
 			d3.selectAll(".segnetChart .dots").style("opacity",0)
 			d3.selectAll(".labelDots g").style("opacity",1)
 			d3.select(".labelH").style("opacity",1)
+			d3.selectAll("g.changeScale").style("opacity",1)
+			d3.selectAll("g.absScale").style("opacity",0)
+			d3.selectAll(".urbanElements h5").text("Change of Urban Elements")
 		})
 	}
 	
@@ -207,13 +214,22 @@ function openComparison(location, segnetMinMax) {
 			var change = beautified - original;
 
 			
-			data[segment].Change = 2* ((change - minChange) / (maxChange - minChange)) -1
-			data[segment].Original = (original - min) / (max - min)
-			data[segment].Beautified = (beautified - min) / (max - min)
+			data[segment].normChange = 2* ((change - minChange) / (maxChange - minChange)) -1
+			data[segment].absChange = change
+			//data[segment].Original = (original - min) / (max - min)
+			//data[segment].Beautified = (beautified - min) / (max - min)
+			data[segment].Original = original
+			data[segment].Beautified = beautified
+
+
 		})
 
+		//console.log(globalSegnetMinMax)
+
 		//scales
-		var xPosition = d3.scaleLinear().domain([-1,1]).range([5,width-5])
+		//var xPosition = d3.scaleLinear().domain([-1,1]).range([5,width-5])
+		var changePosition = d3.scaleLinear().domain([-.25,.25]).range([2,width-2])
+		var absPosition = d3.scaleLinear().domain([0,.75]).range([2,width-2])
 		var yPosition = d3.scaleLinear().domain([0,Object.keys(data).length]).range([15,height])
 
 		//legend
@@ -233,48 +249,45 @@ function openComparison(location, segnetMinMax) {
 		.attr("x2",width)
 		.attr("opacity",.1)
 
-		scale.selectAll("text").data([-100,-50,0,50,100]).enter().append("text")
+		var changeScale = svg.append("g").attr("class","changeScale");
+		changeScale.selectAll("text").data([-25,-12.5,0,12.5,25]).enter().append("text")
+		.attr("y",10).style("opacity",.5).style("font-size",10).style("text-anchor","middle").style("font-weight","normal")
 		.attr("fill",function(d){
 			if(d<0) {return "#F93A02"}
 				else if(d>0) {return "#08B3F7"}
 				else {return "white"}
 		})
-		.attr("y",10)
-		.style("opacity",.5)
-		.style("font-size",10)
-		.style("text-anchor","middle")
-		.style("font-weight","normal")
-		.attr("x",function(d){return xPosition(d/110)})
-		.attr("opacity",1)
+		.attr("x",function(d){return changePosition(d/110)})
 		.text(function(d){return d+'%'})
+
+		var absScale = svg.append("g").attr("class","absScale").style("opacity",0);
+		absScale.selectAll("text").data([0, 25, 50, 75]).enter().append("text")
+		.attr("y",10).style("opacity",.5).style("font-size",10).style("text-anchor","left").style("font-weight","normal")
+		.attr("fill","grey")
+		.attr("x",function(d){return absPosition(d/110)})
+		.text(function(d){return d+'%'})
+		
 	
 		var colorScale = d3.scaleLinear().domain([1,0]).range(["white","grey"])
 		var changeBars = svg.append("g").attr("class","changeBars")
 		changeBars.selectAll("path").data(Object.keys(data)).enter().append("path")
 		.attr("fill",function(d){
-			if(data[d].Change >	 0) {return "#08B3F7"} else {return "#F93A02"}
+			if(data[d].absChange >	 0) {return "#08B3F7"} else {return "#F93A02"}
 		})
 		.style("opacity",function(d){
-			return Math.abs(data[d].Change) *2
+			//return Math.abs(data[d].absChange) *4
+			return 1
 		})
 		.attr("d",function(d,i){
 			var correction = -.5;
-			if(data[d].change < 0) {correction = .5}
+			if(data[d].absChange < 0) {correction = .5}
 			var x1 = width /2 + correction
 			var y1 = yPosition(i)
-			var p2 = xPosition(data[d].Change)
-			var p3 = yPosition(i) + 12
+			var p2 = changePosition(data[d].absChange)
+			var p3 = yPosition(i) + 13
 			var p4 = width /2 + correction
 			return "M"+x1+" "+y1+" H "+p2+" V "+p3+" H "+p4+" L "+x1+" "+y1
 		})
-
-		var labels = svg.append("g").attr("class","labels")
-		labels.selectAll("text").data(Object.keys(data)).enter().append("text")
-		.attr("y",function(d,i){return yPosition(i) + 10})
-		.style("fill","white")
-		.style("font-size",10)
-		.attr("x",2)
-		.text(function(d){return d})
 
 		var versions = ["Original","Beautified"]
 		versions.forEach(function(version, i) {
@@ -282,18 +295,19 @@ function openComparison(location, segnetMinMax) {
 			.selectAll("path").data(Object.keys(data)).enter().append("path")
 			.attr("fill",function(d){
 				if(i > 0) {return "#08B3F7"} else {return "#F93A02"}
+				//return "grey"
 			})
 			.style("opacity",function(d){
 				return Math.abs(data[d].version) *2
 			})
 			.attr("d",function(d,i){
-				var correction = -.5;
-				if(data[d].change < 0) {correction = .5}
-				var x1 = width /2 + correction
+				//var correction = -.5;
+				//if(data[d].change < 0) {correction = .5}
+				var x1 = 2
 				var y1 = yPosition(i)
-				var p2 = xPosition(data[d][version])
-				var p3 = yPosition(i) + 12
-				var p4 = width /2 + correction
+				var p2 = absPosition(data[d][version])
+				var p3 = yPosition(i) + 13
+				var p4 = 2
 				return "M"+x1+" "+y1+" H "+p2+" V "+p3+" H "+p4+" L "+x1+" "+y1
 			})
 			//.selectAll("circle").data(Object.keys(data)).enter().append("circle")
@@ -304,6 +318,14 @@ function openComparison(location, segnetMinMax) {
 			//	if(i) {return "#08B3F7"} else {return "#F93A02"}
 			//})
 		})
+
+		var labels = svg.append("g").attr("class","labels")
+		labels.selectAll("text").data(Object.keys(data)).enter().append("text")
+		.attr("y",function(d,i){return yPosition(i) + 10})
+		.style("fill","white")
+		.style("font-size",10)
+		.attr("x",4)
+		.text(function(d){return d})
 	}
 }
 
