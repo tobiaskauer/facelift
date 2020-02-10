@@ -110,6 +110,10 @@ form img {
 	-webkit-text-fill-color: transparent;
 }
 
+ul {
+    list-style: none;
+}
+
 .intro {
 	height: 100vh;
 	width: 70%;
